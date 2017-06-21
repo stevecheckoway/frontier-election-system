@@ -1,0 +1,37 @@
+Release notes 12/7/2009
+
+This document is divided into three sections:
+
+1. Intro
+2. Updates
+3. Database creation
+
+
+1. This release includes the database authorization service and some related updates. The authorization service is designed to handle passing database credentials to the Election Management System (EMS) and periodically changing those credentials for security purposes. The service allows the EMS to establish a database connection without the need to store those credentials. To accommodate using this service various changes were made in the code which manages the data connection in the EMS.
+
+The release includes a script for adding tables and stored procedures needed by the service to one of the databases used in the system as outlined in section three.
+
+2. Updates
+
+a. Core.DataServices
+The DataServices project, which includes the management of the database connection by the EMS, was moved from the Core solution to its own assembly for the purposes of code reuse. Code was added to query the authorization service to authorize the user and get the database credentials and to re-authorize if the connection is lost or the credentials change.
+
+b. Database Authorization Service
+The following outlines the architecture for the main authorization service for the Frontier Election System’s EMS application.  The EMS application is the main front end used to manage geopolitical data, define elections, track and administer precinct-based and central-count tabulators, as well as tallying and accumulating vote totals for reporting and canvassing.  The main backbone of the EMS is a Microsoft SQL Server 2008 database.  Application level security is controlled using the Microsoft Security Role Provider framework.  The EMS database connection is handled by the following authorization service.
+
+Standard client-sever applications generally authenticate directly to the database server with SQL Server level credentials.  This requires managing multiple database level users.  Web-based applications routinely provide secure access to the database server through a single connection string stored within the web.config file stored locally on the web server.  While this authentication is appropriate for a secure web-server, there are obvious security vulnerabilities.  However, the upside is managing a single main connection to the database, while application level security can be controlled within the application itself.  The Frontier Database Authorization Service is a hybrid approach to providing a time-limited, secure database connection without the need to store, or to even know, the database credentials from one use to the next.
+
+The Database Authorization Service connects to the database using the Windows user that the host application for the service runs under.  This logon can be an Active-Directory user, or a local user OS level user.  For this first implementation, we are using the built-in ASPNET user since the service is currently running under IIS.  It is imperative that this user be configured with limited access to the main server resources.  In addition, this user should have limited rights in SQL Server, and almost no rights to the OS or files on the server.  Future implementations of this service will use a local user with appropriately restricted rights.
+
+When logging in to the main EMS application, the login request is routed to the Authorization service.  The Authorization Service then manages all database connections from that point after verifying the application level user credentials. The service is based on Microsoft’s Windows Communication Foundation (WCF) programming model. The service can be hosted by IIS, as a Windows service or as a self-serving application. The service Installer is set up to create a website in IIS to host the service. The service is designed to handle concurrent requests asynchronously.
+
+When a user starts the EMS application, a login window appears.  The credentials supplied are the application username and password.  The EMS connects to the Database Authorization Service through an SSL connection.  The authorization service uses the Windows-based credentials to access the SQL Server database server in order to verify the application username and password.  Once the application login is authenticated, the Authorization Service then checks to see whether there is a SQL Server level database user for the specific database requested.  If no user exists, the Authorization Service creates a new Server Level user with a randomized username and password.  These credentials are then sent back to the EMS application and used to connect to the database from the client side.  Once a user has been created for a specific database, the Authorization Service will re-randomize the username and password on a set interval which is configurable. For testing purposes, the interval (in minutes) is currently set as the AuthorizationTimeout value in the Web.config file of the service. This way, the set of credentials are only valid for a finite lifetime.  The EMS will automatically re-authenticate thru the Authorization Service once the current credentials have expired.  
+
+This is the first implementation of the Frontier Database Authorization Service.  Future releases are currently under-way to address several enhancements.  The first enhancement will be to modify the service to use a different user than ASPNET.  Other enhancements will include reducing the lifetime of the database credentials in such a way that only a single instance of the EMS uses a given set of credentials, encrypting the database credentials in the application memory, and a service management module to change the configuration of the authorization service and other services through the EMS.
+
+3. Database Setup
+The service is designed to use Microsoft’s Sql Server 2005 but should be compatible with Sql Server 2008 and Sql Server Express. It uses a database named CartridgeProcessingQueue to hold the credentials for the election database, a separate database from CartridgeProcessingQueue. The service has no direct access to the election database. It connects to CartridgeProcessingQueue through Windows authentication. The .sql file in the Schema directory contains the script to create the tables and procedures necessary for the service.
+
+a) Create a database named CartridgeProcessingQueue
+b) Create a database login for the local ASPNET user with admin privileges, as the service currently runs under IIS
+c) Run the scripts found in CartridgeProcessingQueue.sql

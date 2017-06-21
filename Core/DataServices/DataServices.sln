@@ -1,0 +1,29 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 10.00
+# Visual Studio 2008
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "DataServices", "DataServices.csproj", "{CAED6A88-1672-452D-8F9E-A20BE8339A70}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution Items", "{B3B57382-8402-4CD2-A85D-3C511E907821}"
+	ProjectSection(SolutionItems) = preProject
+		Prebuild.bat = Prebuild.bat
+	EndProjectSection
+EndProject
+Global
+	GlobalSection(SubversionScc) = preSolution
+		Svn-Managed = True
+		Manager = AnkhSVN - Subversion Support for Visual Studio
+	EndGlobalSection
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{CAED6A88-1672-452D-8F9E-A20BE8339A70}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{CAED6A88-1672-452D-8F9E-A20BE8339A70}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{CAED6A88-1672-452D-8F9E-A20BE8339A70}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{CAED6A88-1672-452D-8F9E-A20BE8339A70}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+EndGlobal

@@ -1,0 +1,109 @@
+Release notes 11/30/2009
+
+This document is divided into four sections:
+
+1. Intro
+2. Structure
+3. External dependencies
+4. Known issues
+
+
+Section 1: Intro
+
+Welcome to the initial public release of source code for the Sequoia Frontier Election System(tm). This initial release contains source code for generating ballot PDFs within the election management system as well as the internal dependencies required for this functionality. If you wish to compile the code, you will need to obtain the third party dependencies listed in section 3.
+
+We have included the Microsoft Visual Studio 2008 solution (.sln) and project (.csproj) files if you wish to view the files in VS2008 or another IDE. Each solution includes a unit test project usually named [Project]Tests. The unit tests are a useful place to start in understanding how the code is used.
+
+Please contact us at SourceCode@sequoiavote.com if you have any questions or comments regarding this release.
+
+All source code is copyright 2009 by Sequoia Voting Systems.  This public disclosure does not confer ownership to any individuals or groups.  This download is covered by the terms of the license available here:
+
+http://www.sequoiavote.com/license.html
+
+=====================================================================
+
+
+Section 2: Structure
+
+The following is a brief description of each solution/project:
+
+BallotPdf
+- Provides functionality to create ballot PDFs based on data in the database.
+
+Common
+- Provides utilities for common functions such as encryption, compression, etc.
+
+Core
+- Provides core data services including logging and exception handling.
+
+DomainObjects
+- Provides the base data objects used by all Frontier components.
+
+Interop
+- Provides bitmap, PDF, and barcode generation capabilities to the Election Management System (EMS).
+
+In order to maintain the external references within each project, you will want to copy the 3rd party assemblies listed in section 3 to the following folder structure under your working folder root:
+
+[root]
+  |
+  -- 3rdPartyDlls
+	|
+	-- Audio (NCT Audio assemblies)
+	|
+	-- ICSharpCode (IC# Code assembly)
+	|
+	-- Ikvm (IKVM assemblies)
+	|
+	-- MS (the two SqlServer assemblies)
+	|   |
+	|   -- EntLib4 (the Practices assemblies)
+	|
+	-- Testing (the nunit assembly)
+
+Most projects include a file named Prebuild.bat which is used to copy 3rd party assemblies into a local folder named SolutionItems at the root of each project on build. You do not have to manually create this folder as the batch file will create it for you if it does not already exist. When building in Visual Studio, the prebuild is executed automatically.
+
+If you wish to build the projects outside of Visual Studio, you should manually execute each project's Prebuild.bat file before compilation.
+
+=====================================================================
+
+
+Section 3: External dependencies
+
+The code in this release has the following dependencies, some of which require the installation of third party software:
+
+Microsoft:
+- Microsoft.Practices.EnterpriseLibrary.Caching.dll (4.0.0.0)
+- Microsoft.Practices.EnterpriseLibrary.Common.dll (4.0.0.0)
+- Microsoft.Practices.EnterpriseLibrary.Data.dll (4.0.0.0)
+- Microsoft.Practices.EnterpriseLibrary.ExceptionHandling.dll (4.0.0.0)
+- Microsoft.Practices.EnterpriseLibrary.Logging.dll (4.0.0.0)
+- Microsoft.Practices.EnterpriseLibrary.Security.dll (4.0.0.0)
+- Microsoft.Practices.EnterpriseLibrary.Validation.dll (4.0.0.0)
+- Microsoft.Practices.ObjectBuilder2.dll (2.1.0.0)
+- Microsoft.SqlServer.ConnectionInfo.dll (9.0.242.0)
+- Microsoft.SqlServer.Smo.dll (9.0.242.0)
+
+NCT Audio (Requires installation of NCT Audio Studio 2.7):
+- Interop.NCTAUDIOFILE2Lib.dll (2.0.0.0)
+- Interop.NCTTEXTTOAUDIO2Lib.dll (2.0.0.0)
+
+IC# Code:
+- ICSharpCode.SharpZipLib.dll (0.85.5.452)
+
+IKVM:
+- IKVM.OpenJDK.ClassLibrary.dll (0.36.0.5)
+- IKVM.Runtime.dll (0.36.0.5)
+
+Nunit:
+- nunit.framework.dll (2.4.8.0)
+
+AquaPDF:
+- AquaPDF2.8.1.dll (2.8.1)
+
+=====================================================================
+
+
+Section 4: Known issues
+
+- Database not included in the current release. Some functionality will not be available until the database structures are released (release 2). In the meantime, there are helper functions within many of the unit tests which mock this functionality. Please refer to those to see what will be coming from the DB.
+- Hard coded encryption keys. Currently, the encryption keys in the Utilities/Encryption project are hard coded. This is a product of our iterative development process and will be addressed in a future release.

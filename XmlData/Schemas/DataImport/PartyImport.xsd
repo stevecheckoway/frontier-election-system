@@ -1,0 +1,30 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<xs:schema xmlns:tns="urn:partyimport-schema" elementFormDefault="qualified" targetNamespace="urn:partyimport-schema" xmlns:xs="http://www.w3.org/2001/XMLSchema">
+  <xs:element name="PartyImport" nillable="true" type="tns:PartyImport" />
+  <xs:complexType name="PartyImport">
+    <xs:complexContent mixed="false">
+      <xs:extension base="tns:DomainObject">
+        <xs:sequence>
+          <xs:element minOccurs="0" maxOccurs="1" name="Parties" type="tns:ArrayOfParty" />
+        </xs:sequence>
+      </xs:extension>
+    </xs:complexContent>
+  </xs:complexType>
+  <xs:complexType name="DomainObject" />
+  <xs:complexType name="Party">
+    <xs:complexContent mixed="false">
+      <xs:extension base="tns:DomainObject">
+        <xs:attribute name="Id" type="xs:int" use="required" />
+        <xs:attribute name="Name" type="xs:string" />
+        <xs:attribute name="Abbreviation" type="xs:string" />
+        <xs:attribute name="ListOrder" type="xs:int" use="required" />
+        <xs:attribute name="ExtRefKey" type="xs:string" />
+      </xs:extension>
+    </xs:complexContent>
+  </xs:complexType>
+  <xs:complexType name="ArrayOfParty">
+    <xs:sequence>
+      <xs:element minOccurs="0" maxOccurs="unbounded" name="Party" nillable="true" type="tns:Party" />
+    </xs:sequence>
+  </xs:complexType>
+</xs:schema>

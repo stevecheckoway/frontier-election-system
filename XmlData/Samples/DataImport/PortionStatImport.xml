@@ -1,0 +1,7 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<PortionStatImport xmlns="urn:portionstatimport-schema">
+  <PortionStats>
+    <PortionStat ExtRefKeyPartyId="1" ExtRefKeyPortionId="1" Registration="50" />
+    <PortionStat ExtRefKeyPartyId="2" ExtRefKeyPortionId="1" Registration="50" />
+  </PortionStats>
+</PortionStatImport>

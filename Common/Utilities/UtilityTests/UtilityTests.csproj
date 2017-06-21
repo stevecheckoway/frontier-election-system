@@ -1,0 +1,119 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="3.5" DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <PropertyGroup>
+    <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
+    <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
+    <ProductVersion>9.0.30729</ProductVersion>
+    <SchemaVersion>2.0</SchemaVersion>
+    <ProjectGuid>{2C44064C-89D6-415B-9333-EC0DA679ED1B}</ProjectGuid>
+    <OutputType>Library</OutputType>
+    <AppDesignerFolder>Properties</AppDesignerFolder>
+    <RootNamespace>UtilityTests</RootNamespace>
+    <AssemblyName>UtilityTests</AssemblyName>
+    <TargetFrameworkVersion>v3.5</TargetFrameworkVersion>
+    <FileAlignment>512</FileAlignment>
+    <SignAssembly>false</SignAssembly>
+    <AssemblyOriginatorKeyFile>
+    </AssemblyOriginatorKeyFile>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
+    <DebugSymbols>true</DebugSymbols>
+    <DebugType>full</DebugType>
+    <Optimize>false</Optimize>
+    <OutputPath>bin\Debug\</OutputPath>
+    <DefineConstants>DEBUG;TRACE</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
+    <DebugType>pdbonly</DebugType>
+    <Optimize>true</Optimize>
+    <OutputPath>bin\Release\</OutputPath>
+    <DefineConstants>TRACE</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+  </PropertyGroup>
+  <ItemGroup>
+    <Reference Include="nunit.framework, Version=2.4.8.0, Culture=neutral, PublicKeyToken=96d09a1eb7f44a77, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\..\..\3rdPartyDlls\Testing\nunit.framework.dll</HintPath>
+    </Reference>
+    <Reference Include="Sequoia.DomainObjects, Version=1.0.0.0, Culture=neutral, PublicKeyToken=19b4042265e74cc4, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\SolutionItems\Sequoia.DomainObjects.dll</HintPath>
+    </Reference>
+    <Reference Include="System" />
+    <Reference Include="System.Core">
+      <RequiredTargetFramework>3.5</RequiredTargetFramework>
+    </Reference>
+    <Reference Include="System.Xml.Linq">
+      <RequiredTargetFramework>3.5</RequiredTargetFramework>
+    </Reference>
+    <Reference Include="System.Data.DataSetExtensions">
+      <RequiredTargetFramework>3.5</RequiredTargetFramework>
+    </Reference>
+    <Reference Include="System.Data" />
+    <Reference Include="System.Xml" />
+  </ItemGroup>
+  <ItemGroup>
+    <Compile Include="EncryptionTest.cs" />
+    <Compile Include="Enums.cs" />
+    <Compile Include="FileManagerTest.cs" />
+    <Compile Include="IOFixture.cs" />
+    <Compile Include="ObjectMD5Tests.cs" />
+    <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="EnumTextAttributeTests.cs" />
+    <Compile Include="SignedArchiveTests.cs" />
+    <Compile Include="ZipHelperFixture.cs" />
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\Compression\Compression.csproj">
+      <Project>{43DCCB13-653E-479B-B305-FC8223B9C1DB}</Project>
+      <Name>Compression</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\Encryption\Encryption.csproj">
+      <Project>{B886F11B-1E80-46DE-B613-8E6EE203366D}</Project>
+      <Name>Encryption</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\IO\IO.csproj">
+      <Project>{B175EB74-DEA0-4A7D-B1E0-C22F7613625C}</Project>
+      <Name>IO</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\Utilities\Utilities.csproj">
+      <Project>{97E797C5-801D-4AEB-B4CF-3926134BB603}</Project>
+      <Name>Utilities</Name>
+    </ProjectReference>
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="TestData\Schemas\110-electionevent-v5-0.xsd" />
+    <None Include="TestData\Schemas\230-candidatelist-v5-0.xsd" />
+    <None Include="TestData\Schemas\Warningsemlcore-v5-0.xsd" />
+    <None Include="TestData\Schemas\emlcore-v5-0.xsd" />
+    <None Include="TestData\Schemas\emlexternals-v5-0.xsd" />
+    <None Include="TestData\Schemas\External\emltimestamp.xsd" />
+    <None Include="TestData\Schemas\External\xAL.xsd" />
+    <None Include="TestData\Schemas\External\xmldsig-core-schema.xsd" />
+    <None Include="TestData\Schemas\External\xNL.xsd" />
+    <None Include="TestData\Test.zip" />
+  </ItemGroup>
+  <ItemGroup>
+    <Content Include="TestData\Encryption\PrivateKey.xml" />
+    <Content Include="TestData\Encryption\PublicKey.xml" />
+    <Content Include="TestData\Encryption\Results.xml" />
+  </ItemGroup>
+  <ItemGroup>
+    <Folder Include="TestData\CompressTestFolder\" />
+    <Folder Include="TestData\XMLDocs\" />
+  </ItemGroup>
+  <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
+  <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
+       Other similar extension points exist, see Microsoft.Common.targets.
+  <Target Name="BeforeBuild">
+  </Target>
+  <Target Name="AfterBuild">
+  </Target>
+  -->
+  <PropertyGroup>
+    <PreBuildEvent>$(SolutionDir)Prebuild.bat $(SolutionDir) $(Configuration)</PreBuildEvent>
+  </PropertyGroup>
+</Project>

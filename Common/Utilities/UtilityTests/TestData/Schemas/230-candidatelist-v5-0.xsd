@@ -1,0 +1,57 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--
+  EML 110 Schema - Election Event
+
+  History: 4.0 Edited by Paul Spencer (Boynings Consulting) 2005/2006
+                - major release revision
+
+           5.0 Edited by David RR Webber 2007-02-06
+            - made proposer repeatable
+            - added endorsement (per NIST issue with straight party vote)
+  -->
+<xs:schema xmlns:xs="http://www.w3.org/2001/XMLSchema" xmlns="urn:oasis:names:tc:evs:schema:eml" targetNamespace="urn:oasis:names:tc:evs:schema:eml" elementFormDefault="qualified" attributeFormDefault="unqualified" version="5.0" id="eml-230">
+	<xs:include schemaLocation="emlcore-v5-0.xsd"/>
+		<xs:element name="CandidateList">
+		<xs:complexType>
+			<xs:sequence>
+				<xs:element ref="EventIdentifier" minOccurs="0"/>
+				<xs:element name="EventDate" type="SimpleDateRangeStructure" minOccurs="0"/>
+				<xs:element name="ListDate" type="DateType" minOccurs="0"/>
+				<xs:element ref="PollingDistrict" minOccurs="0" maxOccurs="unbounded"/>
+				<xs:element name="Election" maxOccurs="unbounded">
+					<xs:complexType>
+						<xs:sequence>
+							<xs:element ref="ElectionIdentifier"/>
+							<xs:element name="Contest" maxOccurs="unbounded">
+								<xs:complexType>
+									<xs:sequence>
+										<xs:element ref="ContestIdentifier"/>
+										<xs:element name="Description" type="MessagesStructure" minOccurs="0"/>
+										<xs:choice maxOccurs="unbounded">
+											<xs:element ref="Candidate"/>
+											<xs:element name="Affiliation">
+												<xs:complexType>
+													<xs:complexContent>
+														<xs:extension base="AffiliationStructure">
+															<xs:sequence>
+																<xs:element ref="Candidate" minOccurs="0" maxOccurs="unbounded"/>
+																<xs:element ref="Proposer" minOccurs="0" maxOccurs="unbounded"/>
+																<xs:element ref="Endorsement" minOccurs="0" maxOccurs="unbounded"/>
+															</xs:sequence>
+														</xs:extension>
+													</xs:complexContent>
+												</xs:complexType>
+											</xs:element>
+										</xs:choice>
+										<xs:any namespace="##other" minOccurs="0" maxOccurs="unbounded"/>
+									</xs:sequence>
+								</xs:complexType>
+							</xs:element>
+						</xs:sequence>
+					</xs:complexType>
+				</xs:element>
+				<xs:any namespace="##other" minOccurs="0" maxOccurs="unbounded"/>
+			</xs:sequence>
+		</xs:complexType>
+	</xs:element>
+</xs:schema>

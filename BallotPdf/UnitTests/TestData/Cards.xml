@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="utf-8"?>
+<Cards xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xsd="http://www.w3.org/2001/XMLSchema">
+  <Card Id="0" Barcode="LNG:EN|CDE:0">
+    <Faces>
+      <Face Id="0" />
+      <Face Id="1" />
+    </Faces>
+  </Card>
+  <Card Id="1" Barcode="LNG:EN|CDE:1">
+    <Faces>
+      <Face Id="0" />
+      <Face Id="3" />
+    </Faces>
+  </Card>
+</Cards>

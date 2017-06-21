@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<PrecinctImport xmlns="urn:precinctimport-schema">
+  <Precincts>
+    <Precinct ExtRefKey="1" Name="Precinct 1" Code="1" StateCode="1" ListOrder="0">
+      <Portions>
+        <Portion ExtRefKey="1" Name="Portion 1" Code="1" IsValid="true" UserDefined="false" StateCode="1" ListOrder="0">
+          <Districts>
+            <District ExtRefKey="1" />
+            <District ExtRefKey="2" />
+          </Districts>
+        </Portion>
+        <Portion ExtRefKey="2" Name="Portion 2" Code="2" IsValid="true" UserDefined="false" StateCode="2" ListOrder="1">
+          <Districts>
+            <District ExtRefKey="1" />
+          </Districts>
+        </Portion>
+      </Portions>
+    </Precinct>
+    <Precinct ExtRefKey="2" Name="Precinct 2" Code="2" StateCode="2" ListOrder="1">
+      <Portions>
+        <Portion ExtRefKey="3" Name="Portion 3" Code="3" IsValid="true" UserDefined="false" StateCode="3" ListOrder="0">
+          <Districts>
+            <District ExtRefKey="3" />
+          </Districts>
+        </Portion>
+      </Portions>
+    </Precinct>
+  </Precincts>
+</PrecinctImport>

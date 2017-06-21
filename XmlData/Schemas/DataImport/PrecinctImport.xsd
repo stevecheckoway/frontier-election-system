@@ -1,0 +1,71 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<xs:schema xmlns:tns="urn:precinctimport-schema" elementFormDefault="qualified" targetNamespace="urn:precinctimport-schema" xmlns:xs="http://www.w3.org/2001/XMLSchema">
+  <xs:element name="PrecinctImport" nillable="true" type="tns:PrecinctImport" />
+  <xs:complexType name="PrecinctImport">
+    <xs:complexContent mixed="false">
+      <xs:extension base="tns:DomainObject">
+        <xs:sequence>
+          <xs:element minOccurs="0" maxOccurs="1" name="Precincts" type="tns:ArrayOfPrecinct" />
+        </xs:sequence>
+      </xs:extension>
+    </xs:complexContent>
+  </xs:complexType>
+  <xs:complexType name="DomainObject" />
+  <xs:complexType name="District">
+    <xs:complexContent mixed="false">
+      <xs:extension base="tns:DomainObject">
+        <xs:attribute name="Id" type="xs:int" use="required" />
+        <xs:attribute name="Name" type="xs:string" />
+        <xs:attribute name="StateCode" type="xs:string" />
+        <xs:attribute name="ExtRefKey" type="xs:string" />
+        <xs:attribute name="ListOrder" type="xs:int" use="required" />
+      </xs:extension>
+    </xs:complexContent>
+  </xs:complexType>
+  <xs:complexType name="Portion">
+    <xs:complexContent mixed="false">
+      <xs:extension base="tns:DomainObject">
+        <xs:sequence>
+          <xs:element minOccurs="0" maxOccurs="1" name="Districts" type="tns:ArrayOfDistrict" />
+        </xs:sequence>
+        <xs:attribute name="Id" type="xs:int" use="required" />
+        <xs:attribute name="Name" type="xs:string" />
+        <xs:attribute name="ExtRefKey" type="xs:string" />
+        <xs:attribute name="ListOrder" type="xs:int" use="required" />
+        <xs:attribute name="Code" type="xs:string" />
+        <xs:attribute name="IsValid" type="xs:boolean" use="required" />
+        <xs:attribute name="UserDefined" type="xs:boolean" use="required" />
+      </xs:extension>
+    </xs:complexContent>
+  </xs:complexType>
+  <xs:complexType name="ArrayOfDistrict">
+    <xs:sequence>
+      <xs:element minOccurs="0" maxOccurs="unbounded" name="District" nillable="true" type="tns:District" />
+    </xs:sequence>
+  </xs:complexType>
+  <xs:complexType name="Precinct">
+    <xs:complexContent mixed="false">
+      <xs:extension base="tns:DomainObject">
+        <xs:sequence>
+          <xs:element minOccurs="0" maxOccurs="1" name="Portions" type="tns:ArrayOfPortion" />
+        </xs:sequence>
+        <xs:attribute name="Id" type="xs:int" use="required" />
+        <xs:attribute name="Name" type="xs:string" />
+        <xs:attribute name="Code" type="xs:string" />
+        <xs:attribute name="StateCode" type="xs:string" />
+        <xs:attribute name="ListOrder" type="xs:int" use="required" />
+        <xs:attribute name="ExtRefKey" type="xs:string" />
+      </xs:extension>
+    </xs:complexContent>
+  </xs:complexType>
+  <xs:complexType name="ArrayOfPortion">
+    <xs:sequence>
+      <xs:element minOccurs="0" maxOccurs="unbounded" name="Portion" nillable="true" type="tns:Portion" />
+    </xs:sequence>
+  </xs:complexType>
+  <xs:complexType name="ArrayOfPrecinct">
+    <xs:sequence>
+      <xs:element minOccurs="0" maxOccurs="unbounded" name="Precinct" nillable="true" type="tns:Precinct" />
+    </xs:sequence>
+  </xs:complexType>
+</xs:schema>

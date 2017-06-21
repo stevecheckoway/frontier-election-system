@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="utf-8"?>
+<Ballots xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xsd="http://www.w3.org/2001/XMLSchema">
+  <Ballot Id="1" BallotStyleId="1" PrecinctId="0">
+    <Cards>
+      <Card Id="0" Barcode="LNG:EN|CDE:0" />
+    </Cards>
+  </Ballot>
+  <Ballot Id="2" BallotStyleId="2" PrecinctId="0">
+    <Cards>
+      <Card Id="1" Barcode="LNG:EN|CDE:1" />
+    </Cards>
+  </Ballot>
+</Ballots>

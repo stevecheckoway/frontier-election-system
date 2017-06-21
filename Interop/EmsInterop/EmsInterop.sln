@@ -1,0 +1,38 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 10.00
+# Visual Studio 2008
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "EmsInterop", "EmsInterop\EmsInterop.csproj", "{E7B28CCF-5DC4-481D-A872-1C4766D3AB96}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Tester", "Tester\Tester.csproj", "{552853E9-7857-4688-830C-DEEBCA4441B9}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "EmsImaging", "EmsImaging\EmsImaging.csproj", "{08BCC06F-4140-499E-A238-F266F9A0636A}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "SolutionItems", "SolutionItems", "{45CEBA6E-9FB9-4486-92DD-A2A01AE59701}"
+EndProject
+Global
+	GlobalSection(SubversionScc) = preSolution
+		Svn-Managed = True
+		Manager = AnkhSVN - Subversion Support for Visual Studio
+	EndGlobalSection
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{E7B28CCF-5DC4-481D-A872-1C4766D3AB96}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{E7B28CCF-5DC4-481D-A872-1C4766D3AB96}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{E7B28CCF-5DC4-481D-A872-1C4766D3AB96}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{E7B28CCF-5DC4-481D-A872-1C4766D3AB96}.Release|Any CPU.Build.0 = Release|Any CPU
+		{552853E9-7857-4688-830C-DEEBCA4441B9}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{552853E9-7857-4688-830C-DEEBCA4441B9}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{552853E9-7857-4688-830C-DEEBCA4441B9}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{552853E9-7857-4688-830C-DEEBCA4441B9}.Release|Any CPU.Build.0 = Release|Any CPU
+		{08BCC06F-4140-499E-A238-F266F9A0636A}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{08BCC06F-4140-499E-A238-F266F9A0636A}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{08BCC06F-4140-499E-A238-F266F9A0636A}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{08BCC06F-4140-499E-A238-F266F9A0636A}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+EndGlobal

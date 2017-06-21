@@ -1,0 +1,41 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 10.00
+# Visual Studio 2008
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "DomainObjects", "DomainObjects\DomainObjects.csproj", "{461823EC-299A-4F74-857D-30898A8D5176}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "DomainObjectsTests", "DomainObjectsTests\DomainObjectsTests.csproj", "{7B412DDA-EFE0-4459-A1F2-7571F8E512EA}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "SolutionItems", "SolutionItems", "{C2B9ED6E-37F7-4C3E-8AB9-0577CB11B4EB}"
+	ProjectSection(SolutionItems) = preProject
+		Prebuild.bat = Prebuild.bat
+	EndProjectSection
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ObjectBuilders", "ObjectBuilders\ObjectBuilders.csproj", "{BED6A31A-D691-4BC4-BC3C-EE315D815772}"
+EndProject
+Global
+	GlobalSection(SubversionScc) = preSolution
+		Svn-Managed = True
+		Manager = AnkhSVN - Subversion Support for Visual Studio
+	EndGlobalSection
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{461823EC-299A-4F74-857D-30898A8D5176}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{461823EC-299A-4F74-857D-30898A8D5176}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{461823EC-299A-4F74-857D-30898A8D5176}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{461823EC-299A-4F74-857D-30898A8D5176}.Release|Any CPU.Build.0 = Release|Any CPU
+		{7B412DDA-EFE0-4459-A1F2-7571F8E512EA}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{7B412DDA-EFE0-4459-A1F2-7571F8E512EA}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{7B412DDA-EFE0-4459-A1F2-7571F8E512EA}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{7B412DDA-EFE0-4459-A1F2-7571F8E512EA}.Release|Any CPU.Build.0 = Release|Any CPU
+		{BED6A31A-D691-4BC4-BC3C-EE315D815772}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{BED6A31A-D691-4BC4-BC3C-EE315D815772}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{BED6A31A-D691-4BC4-BC3C-EE315D815772}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{BED6A31A-D691-4BC4-BC3C-EE315D815772}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+EndGlobal

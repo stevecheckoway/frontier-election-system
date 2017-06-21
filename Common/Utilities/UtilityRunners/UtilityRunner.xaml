@@ -1,0 +1,13 @@
+﻿<Window x:Class="UtilityRunners.UtilityRunner"
+    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:Sequoia="clr-namespace:UtilityRunners.Controls"
+    Title="UtilityRunner" Height="640" Width="800">
+    <Grid>
+        <TabControl>
+            <TabItem Header="Archive Testers">
+                <Sequoia:ArchiveTester x:Name="inArchiveControl" />
+            </TabItem>
+        </TabControl>
+    </Grid>
+</Window>

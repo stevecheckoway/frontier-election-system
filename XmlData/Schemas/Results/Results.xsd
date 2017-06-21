@@ -1,0 +1,119 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<xs:schema elementFormDefault="qualified" xmlns:xs="http://www.w3.org/2001/XMLSchema">
+  <xs:element name="CartridgeContainer" nillable="true" type="CartridgeContainer" />
+  <xs:complexType name="CartridgeContainer">
+    <xs:sequence>
+      <xs:element minOccurs="0" maxOccurs="1" name="CartridgeModes" type="ArrayOfCartridgeMode" />
+    </xs:sequence>
+  </xs:complexType>
+  <xs:complexType name="ArrayOfCartridgeMode">
+    <xs:sequence>
+      <xs:element minOccurs="0" maxOccurs="unbounded" name="CartridgeMode" nillable="true" type="CartridgeMode" />
+    </xs:sequence>
+  </xs:complexType>
+  <xs:complexType name="CartridgeMode">
+    <xs:sequence>
+      <xs:element minOccurs="0" maxOccurs="1" name="VoterRecords" type="ArrayOfVoterRecord" />
+    </xs:sequence>
+    <xs:attribute name="Id" type="xs:int" use="required" />
+    <xs:attribute name="Opened" type="xs:dateTime" use="required" />
+    <xs:attribute name="Closed" type="xs:dateTime" use="required" />
+    <xs:attribute name="VoterCount" type="xs:int" use="required" />
+  </xs:complexType>
+  <xs:complexType name="ArrayOfVoterRecord">
+    <xs:sequence>
+      <xs:element minOccurs="0" maxOccurs="unbounded" name="VoterRecord" nillable="true" type="VoterRecord" />
+    </xs:sequence>
+  </xs:complexType>
+  <xs:complexType name="VoterRecord">
+    <xs:complexContent mixed="false">
+      <xs:extension base="DomainObject">
+        <xs:sequence>
+          <xs:element minOccurs="0" maxOccurs="1" name="Contests" type="ArrayOfVoterContest" />
+          <xs:element minOccurs="0" maxOccurs="1" name="OutstackConditions" type="ArrayOfOutstackCondition" />
+        </xs:sequence>
+        <xs:attribute name="BallotId" type="xs:int" use="required" />
+        <xs:attribute name="CardId" type="xs:int" use="required" />
+        <xs:attribute name="ContestCount" type="xs:int" use="required" />
+        <xs:attribute name="Id" type="xs:long" use="required" />
+        <xs:attribute name="PartyId" type="xs:int" use="required" />
+        <xs:attribute name="PrecinctId" type="xs:int" use="required" />
+        <xs:attribute name="IsValid" type="xs:boolean" use="required" />
+      </xs:extension>
+    </xs:complexContent>
+  </xs:complexType>
+  <xs:complexType name="DomainObject" />
+  <xs:complexType name="OutstackCondition">
+    <xs:complexContent mixed="false">
+      <xs:extension base="DomainObject">
+        <xs:attribute name="ConditionType" type="OutstackConditionId" use="required" />
+        <xs:attribute name="Adjudicated" type="xs:boolean" use="required" />
+      </xs:extension>
+    </xs:complexContent>
+  </xs:complexType>
+  <xs:simpleType name="OutstackConditionId">
+    <xs:restriction base="xs:string">
+      <xs:enumeration value="Undefined" />
+      <xs:enumeration value="Overvote" />
+      <xs:enumeration value="Undervote" />
+      <xs:enumeration value="WriteIn" />
+      <xs:enumeration value="Provisional" />
+      <xs:enumeration value="Challenge" />
+      <xs:enumeration value="Blank" />
+      <xs:enumeration value="BrokenStraightParty" />
+      <xs:enumeration value="PartyCrossoverPrimary" />
+    </xs:restriction>
+  </xs:simpleType>
+  <xs:complexType name="ArrayOfVoterContest">
+    <xs:sequence>
+      <xs:element minOccurs="0" maxOccurs="unbounded" name="Contest" nillable="true" type="VoterContest" />
+    </xs:sequence>
+  </xs:complexType>
+  <xs:complexType name="VoterContest">
+    <xs:sequence>
+      <xs:element minOccurs="0" maxOccurs="1" name="OutstackConditions" type="ArrayOfOutstackCondition" />
+      <xs:element minOccurs="0" maxOccurs="1" name="Candidates" type="ArrayOfVoterCandidate" />
+    </xs:sequence>
+    <xs:attribute name="Id" type="xs:int" use="required" />
+    <xs:attribute name="ContestType" type="ContestType" use="required" />
+    <xs:attribute name="VoteFor" type="xs:int" use="required" />
+  </xs:complexType>
+  <xs:complexType name="ArrayOfOutstackCondition">
+    <xs:sequence>
+      <xs:element minOccurs="0" maxOccurs="unbounded" name="OutstackCondition" nillable="true" type="OutstackCondition" />
+    </xs:sequence>
+  </xs:complexType>
+  <xs:complexType name="ArrayOfVoterCandidate">
+    <xs:sequence>
+      <xs:element minOccurs="0" maxOccurs="unbounded" name="Candidate" nillable="true" type="VoterCandidate" />
+    </xs:sequence>
+  </xs:complexType>
+  <xs:complexType name="VoterCandidate">
+    <xs:attribute name="Id" type="xs:int" use="required" />
+    <xs:attribute name="CandidateType" type="CandidateType" use="required" />
+    <xs:attribute name="WriteInName" type="xs:string" />
+  </xs:complexType>
+  <xs:simpleType name="CandidateType">
+    <xs:restriction base="xs:string">
+      <xs:enumeration value="Standard" />
+      <xs:enumeration value="StraightParty" />
+      <xs:enumeration value="Endorsed" />
+      <xs:enumeration value="WriteIn" />
+      <xs:enumeration value="Response" />
+      <xs:enumeration value="SelectivePrimary" />
+      <xs:enumeration value="None" />
+      <xs:enumeration value="Proportional" />
+      <xs:enumeration value="ResolvedWriteIn" />
+      <xs:enumeration value="PrintOnly" />
+    </xs:restriction>
+  </xs:simpleType>
+  <xs:simpleType name="ContestType">
+    <xs:restriction base="xs:string">
+      <xs:enumeration value="Standard" />
+      <xs:enumeration value="StraightParty" />
+      <xs:enumeration value="RankedChoice" />
+      <xs:enumeration value="Proposal" />
+      <xs:enumeration value="Recall" />
+    </xs:restriction>
+  </xs:simpleType>
+</xs:schema>

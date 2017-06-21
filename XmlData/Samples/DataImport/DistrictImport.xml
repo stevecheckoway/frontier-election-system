@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<DistrictImport xmlns="urn:districtimport-schema">
+  <DistrictCategories>
+    <DistrictCategory ExtRefKey="1" Name="Test district category 1" StateCode="1" ListOrder="0">
+      <Districts>
+        <District ExtRefKey="1" Name="Test district 1" StateCode="1" ListOrder="0" />
+        <District ExtRefKey="2" Name="Test district 2" StateCode="2" ListOrder="1" />
+      </Districts>
+    </DistrictCategory>
+    <DistrictCategory ExtRefKey="2" Name="Test district category 2" StateCode="2" ListOrder="1">
+      <Districts>
+        <District ExtRefKey="3" Name="Test district 3" StateCode="3" ListOrder="0" />
+      </Districts>
+    </DistrictCategory>
+  </DistrictCategories>
+</DistrictImport>

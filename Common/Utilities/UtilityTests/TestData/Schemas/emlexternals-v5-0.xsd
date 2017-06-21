@@ -1,0 +1,68 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+  EML Externals Schema - Includes
+
+  History: 4.0 Edited by Paul Spencer (Boynings Consulting) 2005/2006
+                - major release revision
+
+           5.0 Edited by David RR Webber (OVS) 2007-02-07
+  -->
+<xs:schema xmlns="urn:oasis:names:tc:evs:schema:eml" xmlns:xs="http://www.w3.org/2001/XMLSchema" xmlns:xal="urn:oasis:names:tc:ciq:xsdschema:xAL:2.0" xmlns:xnl="urn:oasis:names:tc:ciq:xsdschema:xNL:2.0" targetNamespace="urn:oasis:names:tc:evs:schema:eml" elementFormDefault="qualified" attributeFormDefault="unqualified" version="5.0" id="eml-externals">
+	<xs:annotation>
+		<xs:documentation>This file provides mappings between the various name and address data types and any external data types that are to be used for a specific election scenario. By default, the OASIS Extensible Name and Address Language is used. If you wish to change this, do so by editing this file, but do not change the file name as this will require changes to other EML files.</xs:documentation>
+	</xs:annotation>
+	<xs:import namespace="urn:oasis:names:tc:ciq:xsdschema:xAL:2.0" schemaLocation="external/xAL.xsd"/>
+	<xs:import namespace="urn:oasis:names:tc:ciq:xsdschema:xNL:2.0" schemaLocation="external/xNL.xsd"/>
+	<!--addresses -->
+	<xs:complexType name="MailingAddressStructure">
+		<xs:complexContent>
+			<xs:extension base="xal:AddressDetails"/>
+		</xs:complexContent>
+	</xs:complexType>
+	<xs:complexType name="PhysicalAddressStructure">
+		<xs:complexContent>
+			<xs:extension base="xal:AddressDetails"/>
+		</xs:complexContent>
+	</xs:complexType>
+	<xs:complexType name="ProxyAddressStructure">
+		<xs:complexContent>
+			<xs:extension base="xal:AddressDetails"/>
+		</xs:complexContent>
+	</xs:complexType>
+	<xs:complexType name="QualifyingAddressStructure">
+		<xs:complexContent>
+			<xs:extension base="xal:AddressDetails"/>
+		</xs:complexContent>
+	</xs:complexType>
+	<xs:complexType name="PostalLocationStructure">
+		<xs:complexContent>
+			<xs:extension base="xal:AddressDetails"/>
+		</xs:complexContent>
+	</xs:complexType>
+	<xs:complexType name="AuthorityAddressStructure">
+		<xs:complexContent>
+			<xs:extension base="xal:AddressDetails"/>
+		</xs:complexContent>
+	</xs:complexType>
+	<xs:complexType name="ElectoralAddressStructure">
+		<xs:complexContent>
+			<xs:extension base="xal:AddressDetails"/>
+		</xs:complexContent>
+	</xs:complexType>
+	<xs:complexType name="OfficialAddressStructure">
+		<xs:complexContent>
+			<xs:extension base="xal:AddressDetails"/>
+		</xs:complexContent>
+	</xs:complexType>
+	<!-- names -->
+	<xs:complexType name="PersonNameStructure">
+		<xs:complexContent>
+			<xs:extension base="xnl:NameDetails"/>
+		</xs:complexContent>
+	</xs:complexType>
+	<xs:simpleType name="PersonNameType">
+		<xs:restriction base="xs:token">
+			<xs:maxLength value="70"/>
+		</xs:restriction>
+	</xs:simpleType>
+</xs:schema>

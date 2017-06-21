@@ -1,0 +1,240 @@
+Release notes 12/7/2009
+
+This document is divided into three sections:
+
+1. Intro
+2. Structure
+3. Data dictionary
+
+================================================================================
+
+Section 1: Intro
+
+This release contains a selection of xml schemas which exist at the boundaries of the Frontier Election System(tm). The files define schemas for data import into the system from an external voter registration system as well as election result output.
+
+Sample data files are also included to demonstrate how the schemas might be used in practice.
+
+Please contact us at SourceCode@sequoiavote.com if you have any questions or comments regarding this release.
+
+All source code is copyright 2009 by Sequoia Voting Systems. This public disclosure does not confer ownership to any individuals or groups. This download is covered by the terms of the license available here:
+
+http://www.sequoiavote.com/license.html
+
+================================================================================
+
+Section 2: Structure
+
+The following is a brief description of each file:
+
+DistrictImport.xsd
+- Defines a schema for importing district data into the database.
+
+PrecinctImport.xsd
+- Defines a schema for importing precinct data into the database. Precincts have portions (also known as splits) according to which districts are assigned.
+
+PartyImport.xsd
+- Defines a schema for importing party data into the database.
+
+PortionStatImport.xsd
+- Defines a schema for importing portion statistical information into the database. Statistical information refers to the number of voters registered to a particular party (or no party) assigned to a particular portion.
+
+Results.xsd
+- Defines a schema for communicating the voter records from a voting device to the tally process. A single results file is synonymous with a voting device cartridge and contains election modes which contain voter records. Voter records contain contests and will only show candidates when they have been selected by a voter record. A contest with no selections (an undervote) will show no child candidates. Additionally, we have outstack conditions at both the voter record and contest levels to indicate discrepancies with a particular ballot or ballot contest which require post-process adjudication.
+
+The schemas are located in /XmlData/Schemas/[DataImport]|[Results]
+The samples are locating in /XmlData/Samples/[DataImport]|[Results]
+
+================================================================================
+
+Section 3: Data dictionary
+
+Element: CartridgeContainer
+
+The cartridge container is the root element of the results.xml file. The cartridge container contains a collection of cartridge modes.
+
+--------------------------------------------------------------------------------
+
+Element: CartridgeMode
+
+Cartridge modes equate to election modes such as Pre-LAT, Official, Post-LAT, Recount, etc. Each mode contains voter records which were recorded while polls were open in that mode.
+
+Attributes:
+Id – The mode identifier.
+Opened – The date/time the polls were opened in this mode.
+Closed – The date/time the polls were closed in this mode.
+VoterCount – The number of voter records contained in the mode.
+
+--------------------------------------------------------------------------------
+
+Element: District
+
+District represents an election district.
+
+Attributes:
+Id – The district identifier.
+Name – The user-friendly name of the district.
+StateCode – A code assigned by the state to a particular district.
+ExtRefKey – External Reference Key. This is used to maintain continuity with external data keys after the data has been imported into the Frontier system.
+ListOrder – A one-based list order for data display.
+
+--------------------------------------------------------------------------------
+
+Element: DistrictCategory
+
+District categories represent high-level groupings which may contain one or more districts. Examples would be Federal, Congressional, etc.
+
+Attributes:
+Id – The district category identifier.
+Name – The user-friendly name of the category.
+StateCode – A code assigned by the state to a particular category.
+ExtRefKey – External Reference Key. This is used to maintain continuity with external data keys after the data has been imported into the Frontier system.
+
+--------------------------------------------------------------------------------
+
+Element: DistrictImport
+
+District import is the root element of the DistrictImport.xml file and contains a collection of DistrictCategory elements.
+
+--------------------------------------------------------------------------------
+
+Element: OutstackCondition
+
+Outstack conditions may be children of both VoterRecords and VoterContests. They represent certain anomalies such as a completely blank ballot, under votes, over votes, etc. Outstack conditions are used to identify a voter record for post-processing follow up according to the election rules of a given jurisdiction.
+
+Attributes:
+ConditionType – Refers to the type of condition noted. Conditions may be of the following types:
+	- Undefined – A placeholder in the enumeration for when conditions are initially created but not yet assigned. Undefined 	conditions should never show up in a results file.
+	- Overvote – More candidates were chosen for a given contest than are allowed.
+	- Undervote – Fewer candidates were chosen for a contest than are allowed.
+	- WriteIn – The voter made a write-in entry which must be processed later.
+	- Provisional – The voter cast a provisional ballot.
+	- Challenge – The voter cast a challenge ballot.
+	- Blank – Used for a completely blank ballot.
+	- BrokenStraightParty – The voter made a straight-party contest selection and then made a subsequent selection which 	contradicted the straight-party vote.
+	- PartyCrossoverPrimary – The voter made a party choice on a selective primary contest and then made a subsequent selection 	which contradicted the party choice.
+Adjudicated – Whether or not the voter record has been through post-process adjudication for the outstack condition.
+
+--------------------------------------------------------------------------------
+
+Element: Party
+
+Party represents a political party.
+
+Attributes:
+Id – The party identifier.
+Name – The user-friendly party name.
+Abbreviation – The party abbreviation.
+ListOrder - A one-based list order for data display.
+ExtRefKey - External Reference Key. This is used to maintain continuity with external data keys after the data has been imported into the Frontier system.
+
+--------------------------------------------------------------------------------
+
+Element: PartyImport
+
+Party import is the root element of the PartyImport.xml file and contains a collection of Party elements.
+
+--------------------------------------------------------------------------------
+
+Element: Portion
+
+A portion is a political subdivision based on the intersection of a precinct and a district.
+
+Attributes:
+Id – The portion identifier.
+Name – The user-friendly portion name.
+ExtRefKey – External Reference Key. This is used to maintain continuity with external data keys after the data has been imported into the Frontier system.
+ListOrder - A one-based list order for data display.
+Code – A code assigned by the jurisdiction.
+IsValid – Some portions may be created by certain intersections but are not valid for a given ballot style.
+UserDefined – Whether or not the portion was automatically generated or defined by a user.
+
+--------------------------------------------------------------------------------
+
+Element: PortionStat
+
+A portion stat represents a portion statistic. Portion statistics are the number of registered voters for a given party within a given precinct portion.
+
+Attributes:
+PartyId – The party identifier.
+ExtRefKeyPartyId – The external reference key for the party. This is used to maintain continuity with external data keys after the data has been imported into the Frontier system.
+PortionId – The portion identifier.
+ExtRefKeyPortionId – The external reference key for the portion. This is used to maintain continuity with external data keys after the data has been imported into the Frontier system.
+Registration – The number of voters registered for the party and portion.
+
+--------------------------------------------------------------------------------
+
+Element: PortionStatImport
+
+Portion stat import is the root element of the PortionStatImport.xml file and contains a collection of PortionStat elements.
+
+--------------------------------------------------------------------------------
+
+Element: Precinct
+
+A precinct represents a political subdivision which contains portions.
+
+Attributes:
+Id – The precinct identifier.
+Name – The user-friendly name of the precinct.
+Code – A code assigned by the jurisdiction.
+StateCode – A code assigned by the state for this precinct.
+ListOrder - A one-based list order for data display.
+ExtRefKey - External Reference Key. This is used to maintain continuity with external data keys after the data has been imported into the Frontier system.
+
+--------------------------------------------------------------------------------
+
+Element: PrecinctImport
+
+Precinct import is the root element of the PrecinctImport.xml file and contains a collection of Precinct elements.
+
+--------------------------------------------------------------------------------
+
+Element: VoterCandidate
+
+Voter candidate represents a candidate in a voter record.
+
+Attributes:
+Id – The candidate identifier.
+CandidateType – Refers to the type of candidate. Candidates can be of the following types:
+	- Standard – A person running for a particular office.
+	- StraightParty – A selection on the straight party control contest.
+	- Endorsed – A selection which is endorsed by more than one party.
+	- WriteIn – A write-in selection.
+	- Response – A response to a proposal or referendum question.
+	- SelectivePrimary – A selection on the selective primary control contest.
+	- None – No type.
+	- Proportional – A candidate which is part of a proportional contest.
+	- ResolvedWriteIn – A write-in which has been resolved through post-process adjudication.
+	- PrintOnly – Represents instructions or other ballot artifacts which are printed in the candidate selection area.
+WriteInName – If the candidate type is write-in and a voter writes a name, this is where it is stored. This applies primarily to accessible voting.
+
+--------------------------------------------------------------------------------
+
+Element: VoterContest
+
+Voter contest represents a contest in a voter record. A voter contest contains a collection of VoterCandidates.
+
+Attributes:
+Id – The contest identifier.
+ContestType – The type of the contest. Contests may have the following types:
+	- Standard – A contest type which contains candidates running for a particular office
+	- StraightParty – A type of control contest where a voter makes a single selection which decides their vote on all contests 	controlled by the straight party contest.
+	- RankedChoice – A type of contest in which a voter makes multiple candidate selections which are ranked.
+	- Proposal – Also known as referendum, this is a type of contest which asks the voter to answer a question.
+	- Recall – A control contest type for recall contests.
+VoteFor – The number of selections a voter may make for the contest.
+
+--------------------------------------------------------------------------------
+
+Element: VoterRecord
+
+Voter record represents a voter’s cast ballot. A voter record contains a collection of VoterContests.
+
+Attributes:
+BallotId – The ballot identifier
+CardId – The identifier for the ballot card. The card identifier facilitates multi-card voting.
+ContestCount – The number of contests contained on the ballot.
+Id – The voter record identifier. The identifier is a random unique number assigned to each voter record by the voting device and is not traceable to an individual voter’s personal information.
+PartyId – The party identifier for the voter (if supplied to the system).
+PrecinctId – The precinct identifier for the ballot.
+IsValid – Used for paper ballots only and indicates whether the ballot is valid based on built-in security features such as magnetic ink, UV printing, etc.

@@ -1,0 +1,4 @@
+﻿<%@ ServiceHost Language="C#" Debug="true" 
+    Service="Sequoia.DBAuthService.DBAuthService"
+    Factory="Sequoia.DBAuthService.HostFactory" 
+    CodeBehind="DBAuthService.svc.cs" %>

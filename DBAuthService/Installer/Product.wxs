@@ -1,0 +1,473 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Wix xmlns="http://schemas.microsoft.com/wix/2006/wi"
+     xmlns:iis="http://schemas.microsoft.com/wix/IIsExtension"
+     xmlns:util="http://schemas.microsoft.com/wix/UtilExtension">
+	  <Product Id="b45d78d5-4cd4-479c-ab1e-d3bf1c1eb616" 
+           Name="Sequoia Database Authorization Service 0.0.000.0" 
+           Language="1033"
+           Version="0.0.000.0"
+           Manufacturer="Sequoia Voting Systems" 
+           UpgradeCode="b956cf29-547f-4f84-8040-d182eb694074">
+		<Package InstallerVersion="200"
+             Manufacturer="Sequoia Voting Systems"
+             Compressed="yes" />
+
+		<Media Id="1" Cabinet="DBAuthServiceInstaller.cab" EmbedCab="yes" />
+
+      <!-- Condition Message="You need to be an administrator to install this product.">
+        Priveleged
+    </Condition -->
+
+    <Property Id="IIS_MAJOR_VERSION">
+      <RegistrySearch Id="CheckIISVersion" Root="HKLM" Key="SOFTWARE\Microsoft\InetStp" Name="MajorVersion" Type="raw" />
+    </Property>
+
+    <Condition Message="The IIS Web Server must be installed before installation can proceed. This can be installed from the Add/Remove Windows Components section in Add/Remove Programs. You may need your Windows installation media.">
+      Installed OR IIS_MAJOR_VERSION
+    </Condition>
+
+    <Property Id="FRAMEWORK_ROOT">
+      <RegistrySearch Id="FrameworkRootDir" Root="HKLM" Key="SOFTWARE\Microsoft\.NETFramework" Type="directory" Name="InstallRoot" />
+    </Property>
+
+    <Condition Message="The .NET Framework 2.0 must be installed before installation can proceed.">
+      Installed OR FRAMEWORK_ROOT
+    </Condition>
+
+      <!--
+      For checking the OS
+      Windows 2000 - VersionNT = 500
+      Windows 2000 SPn - VersionNT = 500 AND ServicePackLevel = n
+      WindowsXP - VersionNT = 501
+      WindowsXP SPn - VersionNT = 501 and ServicePackLevel = n
+      Windows XP Home Spn - VersionNT = 501 AND MsiNTSuitePersonal AND ServicePackLevel = n
+      Windows Server 2003 -  VersionNT=502
+      Windows Vista, Server 2008 - VersionNT=600
+      Windows 7, Server 2008 R2 - VersionNT=601
+      -->
+
+      <Directory Id="TARGETDIR" Name="SourceDir">
+        
+        <Directory Id="ProgramFilesFolder">
+          <Directory Id="SequoiaVotingSystems" Name="Sequoia Voting Systems">
+            <Directory Id="INSTALLLOCATION" Name="DBAuthService">
+              
+              <Component Id="Comp.ServiceResources" Guid="1D044457-376F-49fe-8525-B68CFEB5200A">
+                <File Id="File.DBAuthServiceSvc"
+                      Name="DBAuthService.svc"
+                      KeyPath="yes"
+                      DiskId="1"
+                      Source="$(var.SolutionDir)DBAuthService\DBAuthService.svc" />
+
+                <File Id="File.WebConfig"
+                      Name="Web.config"
+                      KeyPath="no"
+                      DiskId="1"
+                      Source="$(var.SolutionDir)DBAuthService\Web.config" />
+                
+                <!-- Remove trace logs if any exist -->
+                <RemoveFile Id="RemoveTraces" Name="*.svclog" On="uninstall" />
+                
+              </Component>
+
+              <Directory Id="CompiledServiceFiles" Name="bin">
+
+                <Component Id="Comp.DBAuthService" Guid="56B98E07-6ACC-4128-9F45-A173E25A5044">
+                  <File Id="File.DBAuthService"
+                        Name="DBAuthService.dll"
+                        KeyPath="yes"
+                        DiskId="1"
+                        Source="$(var.SolutionDir)DBAuthService\bin\DBAuthService.dll" />
+                </Component>
+
+                <Component Id="Comp.Core" Guid="DE304179-826D-4a32-9D98-1BE4DBB10540">
+                  <File Id="File.Core"
+                        Name="Core.dll"
+                        KeyPath="yes"
+                        DiskId="1"
+                        Source="$(var.SolutionDir)DBAuthService\bin\Core.dll" />
+					<File Id="File.Core.DataServices"
+							Name="Sequoia.EMS.Core.DataServices.dll"
+							KeyPath="no"
+							DiskId="1"
+							Source="$(var.SolutionDir)DBAuthService\bin\Sequoia.EMS.Core.DataServices.dll" />
+                </Component>
+
+                <Component Id="Comp.Encryption" Guid="CEC28B90-DB93-41d4-97FA-A65993FCEE01">
+                  <File Id="File.Encryption"
+                        Name="Sequoia.Utilities.Encryption.dll"
+                        KeyPath="yes"
+                        DiskId="1"
+                        Source="$(var.SolutionDir)DBAuthService\bin\Sequoia.Utilities.Encryption.dll" />
+                </Component>
+
+                <Component Id="Comp.EntLiblls" Guid="5C4ACA53-5E91-4f6c-BC6B-3B503B235F29">
+                  <File Id="File.CommonDll"
+                        Name="Microsoft.Practices.EnterpriseLibrary.Common.dll"
+                        KeyPath="yes"
+                        DiskId="1"
+                        Source="$(var.SolutionDir)DBAuthService\bin\Microsoft.Practices.EnterpriseLibrary.Common.dll" />
+                  <File Id="File.DataDll"
+                        Name="Microsoft.Practices.EnterpriseLibrary.Data.dll"
+                        KeyPath="no"
+                        DiskId="1"
+                        Source="$(var.SolutionDir)DBAuthService\bin\Microsoft.Practices.EnterpriseLibrary.Data.dll" />
+                </Component>
+                
+              </Directory>
+
+              <!-- Remove permanent set to yes when creating real website on server - using default site for now -->
+              <Component Id="Comp.WebSite"
+                       Guid="3CF3810B-59FD-4a47-806A-D17938AA7659"
+                       Permanent="yes" >
+                <CreateFolder Directory="INSTALLLOCATION"/>
+
+                <iis:WebSite
+                  Id="DBAuthServiceHost"
+                  Description="DB Authorization Service"
+                  AutoStart="yes"
+                  Directory="INSTALLLOCATION"
+                  StartOnInstall="yes">
+                  <iis:WebAddress Id="AssignedIP" IP="[IPADDRESS]"  Port="[PORT]" />
+                  <iis:WebApplication Id="Full.DBAuthServiceApp"
+                    Name="DBAuthServiceApp">
+                    <iis:WebApplicationExtension Executable="[FRAMEWORK_ROOT]v2.0.50727\aspnet_isapi.dll" Extension="adprototype" Verbs="GET,HEAD,POST" Script="yes" CheckPath="yes" />
+                    <iis:WebApplicationExtension Executable="[FRAMEWORK_ROOT]v2.0.50727\aspnet_isapi.dll" Extension="asax" Verbs="GET,HEAD,POST" Script="yes" CheckPath="yes" />
+                    <iis:WebApplicationExtension Executable="[FRAMEWORK_ROOT]v2.0.50727\aspnet_isapi.dll" Extension="ascx" Verbs="GET,HEAD,POST" Script="yes" CheckPath="yes" />
+                    <iis:WebApplicationExtension Executable="[FRAMEWORK_ROOT]v2.0.50727\aspnet_isapi.dll" Extension="ashx" Verbs="GET,HEAD,POST" Script="yes" CheckPath="no" />
+                    <iis:WebApplicationExtension Executable="[FRAMEWORK_ROOT]v2.0.50727\aspnet_isapi.dll" Extension="asmx" Verbs="GET,HEAD,POST" Script="yes" CheckPath="no" />
+                    <iis:WebApplicationExtension Executable="[FRAMEWORK_ROOT]v2.0.50727\aspnet_isapi.dll" Extension="aspx" Verbs="GET,HEAD,POST" Script="yes" CheckPath="no" />
+                    <iis:WebApplicationExtension Executable="[FRAMEWORK_ROOT]v2.0.50727\aspnet_isapi.dll" Extension="axd" Verbs="GET,HEAD,POST" Script="yes" CheckPath="no" />
+                    <iis:WebApplicationExtension Executable="[FRAMEWORK_ROOT]v2.0.50727\aspnet_isapi.dll" Extension="browser" Verbs="GET,HEAD,POST" Script="yes" CheckPath="yes" />
+                    <iis:WebApplicationExtension Executable="[FRAMEWORK_ROOT]v2.0.50727\aspnet_isapi.dll" Extension="cd" Verbs="GET,HEAD,POST" Script="yes" CheckPath="yes" />
+                    <iis:WebApplicationExtension Executable="[FRAMEWORK_ROOT]v2.0.50727\aspnet_isapi.dll" Extension="compiled" Verbs="GET,HEAD,POST" Script="yes" CheckPath="yes" />
+                    <iis:WebApplicationExtension Executable="[FRAMEWORK_ROOT]v2.0.50727\aspnet_isapi.dll" Extension="config" Verbs="GET,HEAD,POST" Script="yes" CheckPath="yes" />
+                    <iis:WebApplicationExtension Executable="[FRAMEWORK_ROOT]v2.0.50727\aspnet_isapi.dll" Extension="csproj" Verbs="GET,HEAD,POST" Script="yes" CheckPath="yes" />
+                    <iis:WebApplicationExtension Executable="[FRAMEWORK_ROOT]v2.0.50727\aspnet_isapi.dll" Extension="dd" Verbs="GET,HEAD,POST" Script="yes" CheckPath="yes" />
+                    <iis:WebApplicationExtension Executable="[FRAMEWORK_ROOT]v2.0.50727\aspnet_isapi.dll" Extension="exclude" Verbs="GET,HEAD,POST" Script="yes" CheckPath="yes" />
+                    <iis:WebApplicationExtension Executable="[FRAMEWORK_ROOT]v2.0.50727\aspnet_isapi.dll" Extension="java" Verbs="GET,HEAD,POST" Script="yes" CheckPath="yes" />
+                    <iis:WebApplicationExtension Executable="[FRAMEWORK_ROOT]v2.0.50727\aspnet_isapi.dll" Extension="jsl" Verbs="GET,HEAD,POST" Script="yes" CheckPath="yes" />
+                    <iis:WebApplicationExtension Executable="[FRAMEWORK_ROOT]v2.0.50727\aspnet_isapi.dll" Extension="ldb" Verbs="GET,HEAD,POST" Script="yes" CheckPath="yes" />
+                    <iis:WebApplicationExtension Executable="[FRAMEWORK_ROOT]v2.0.50727\aspnet_isapi.dll" Extension="ldd" Verbs="GET,HEAD,POST" Script="yes" CheckPath="yes" />
+                    <iis:WebApplicationExtension Executable="[FRAMEWORK_ROOT]v2.0.50727\aspnet_isapi.dll" Extension="lddprototype" Verbs="GET,HEAD,POST" Script="yes" CheckPath="yes" />
+                    <iis:WebApplicationExtension Executable="[FRAMEWORK_ROOT]v2.0.50727\aspnet_isapi.dll" Extension="ldf" Verbs="GET,HEAD,POST" Script="yes" CheckPath="yes" />
+                    <iis:WebApplicationExtension Executable="[FRAMEWORK_ROOT]v2.0.50727\aspnet_isapi.dll" Extension="licx" Verbs="GET,HEAD,POST" Script="yes" CheckPath="yes" />
+                    <iis:WebApplicationExtension Executable="[FRAMEWORK_ROOT]v2.0.50727\aspnet_isapi.dll" Extension="master" Verbs="GET,HEAD,POST" Script="yes" CheckPath="yes" />
+                    <iis:WebApplicationExtension Executable="[FRAMEWORK_ROOT]v2.0.50727\aspnet_isapi.dll" Extension="mdb" Verbs="GET,HEAD,POST" Script="yes" CheckPath="yes" />
+                    <iis:WebApplicationExtension Executable="[FRAMEWORK_ROOT]v2.0.50727\aspnet_isapi.dll" Extension="mdf" Verbs="GET,HEAD,POST" Script="yes" CheckPath="yes" />
+                    <iis:WebApplicationExtension Executable="[FRAMEWORK_ROOT]v2.0.50727\aspnet_isapi.dll" Extension="msgx" Verbs="GET,HEAD,POST" Script="yes" CheckPath="no" />
+                    <iis:WebApplicationExtension Executable="[FRAMEWORK_ROOT]v2.0.50727\aspnet_isapi.dll" Extension="refresh" Verbs="GET,HEAD,POST" Script="yes" CheckPath="yes" />
+                    <iis:WebApplicationExtension Executable="[FRAMEWORK_ROOT]v2.0.50727\aspnet_isapi.dll" Extension="rem" Verbs="GET,HEAD,POST" Script="yes" CheckPath="no" />
+                    <iis:WebApplicationExtension Executable="[FRAMEWORK_ROOT]v2.0.50727\aspnet_isapi.dll" Extension="resources" Verbs="GET,HEAD,POST" Script="yes" CheckPath="yes" />
+                    <iis:WebApplicationExtension Executable="[FRAMEWORK_ROOT]v2.0.50727\aspnet_isapi.dll" Extension="resx" Verbs="GET,HEAD,POST" Script="yes" CheckPath="yes" />
+                    <iis:WebApplicationExtension Executable="[FRAMEWORK_ROOT]v2.0.50727\aspnet_isapi.dll" Extension="sd" Verbs="GET,HEAD,POST" Script="yes" CheckPath="yes" />
+                    <iis:WebApplicationExtension Executable="[FRAMEWORK_ROOT]v2.0.50727\aspnet_isapi.dll" Extension="sdm" Verbs="GET,HEAD,POST" Script="yes" CheckPath="yes" />
+                    <iis:WebApplicationExtension Executable="[FRAMEWORK_ROOT]v2.0.50727\aspnet_isapi.dll" Extension="sdmDocument" Verbs="GET,HEAD,POST" Script="yes" CheckPath="yes" />
+                    <iis:WebApplicationExtension Executable="[FRAMEWORK_ROOT]v2.0.50727\aspnet_isapi.dll" Extension="sitemap" Verbs="GET,HEAD,POST" Script="yes" CheckPath="yes" />
+                    <iis:WebApplicationExtension Executable="[FRAMEWORK_ROOT]v2.0.50727\aspnet_isapi.dll" Extension="skin" Verbs="GET,HEAD,POST" Script="yes" CheckPath="yes" />
+                    <iis:WebApplicationExtension Executable="[FRAMEWORK_ROOT]v2.0.50727\aspnet_isapi.dll" Extension="soap" Verbs="GET,HEAD,POST" Script="yes" CheckPath="no" />
+                    <iis:WebApplicationExtension Executable="[FRAMEWORK_ROOT]v2.0.50727\aspnet_isapi.dll" Extension="svc" Verbs="GET,HEAD,POST" Script="yes" CheckPath="no" />
+                    <iis:WebApplicationExtension Executable="[FRAMEWORK_ROOT]v2.0.50727\aspnet_isapi.dll" Extension="vb" Verbs="GET,HEAD,POST" Script="yes" CheckPath="yes" />
+                    <iis:WebApplicationExtension Executable="[FRAMEWORK_ROOT]v2.0.50727\aspnet_isapi.dll" Extension="vbproj" Verbs="GET,HEAD,POST" Script="yes" CheckPath="yes" />
+                    <iis:WebApplicationExtension Executable="[FRAMEWORK_ROOT]v2.0.50727\aspnet_isapi.dll" Extension="vjsproj" Verbs="GET,HEAD,POST" Script="yes" CheckPath="yes" />
+                    <iis:WebApplicationExtension Executable="[FRAMEWORK_ROOT]v2.0.50727\aspnet_isapi.dll" Extension="vsdisco" Verbs="GET,HEAD,POST" Script="yes" CheckPath="no" />
+                    <iis:WebApplicationExtension Executable="[FRAMEWORK_ROOT]v2.0.50727\aspnet_isapi.dll" Extension="webinfo" Verbs="GET,HEAD,POST" Script="yes" CheckPath="yes" />
+                  </iis:WebApplication>
+                  <iis:WebDirProperties Id="Full.DBAuthServiceProperties"
+                    Read="yes"
+                    Write="no"
+                    Script="yes"
+                    Execute="yes"
+                    AnonymousAccess="yes"
+                    LogVisits="yes"
+                    Index="yes"
+                    DefaultDocuments="Default.aspx" />
+                </iis:WebSite>
+                <util:EventSource Log="Application"
+                  Name="Sequoia DB Authorization Service"
+                  SupportsInformationals="yes"
+                  SupportsErrors="yes"
+                  SupportsWarnings="yes"
+                  SupportsFailureAudits="yes"
+                  SupportsSuccessAudits="yes"
+                  EventMessageFile="$(env.windir)\Microsoft.NET\Framework\v2.0.50727\EventLogMessages.dll" />
+              </Component>
+
+              <Component Id="Comp.VirtualDirectory" 
+                         Guid="FC68F037-5873-4a2c-BA36-9BC41666EB2E">
+                <CreateFolder Directory="INSTALLLOCATION" />
+                <iis:WebVirtualDir
+                    Id="DBAuthService"
+                    Alias="DBAuthService"
+                    WebSite="DefaultWebSite"
+                    Directory="INSTALLLOCATION">
+                  <iis:WebApplication Id="DBAuthServiceApp"
+                      Name="DBAuthServiceApp">
+                    <iis:WebApplicationExtension Executable="[FRAMEWORK_ROOT]v2.0.50727\aspnet_isapi.dll" Extension="adprototype" Verbs="GET,HEAD,POST" Script="yes" CheckPath="yes" />
+                    <iis:WebApplicationExtension Executable="[FRAMEWORK_ROOT]v2.0.50727\aspnet_isapi.dll" Extension="asax" Verbs="GET,HEAD,POST" Script="yes" CheckPath="yes" />
+                    <iis:WebApplicationExtension Executable="[FRAMEWORK_ROOT]v2.0.50727\aspnet_isapi.dll" Extension="ascx" Verbs="GET,HEAD,POST" Script="yes" CheckPath="yes" />
+                    <iis:WebApplicationExtension Executable="[FRAMEWORK_ROOT]v2.0.50727\aspnet_isapi.dll" Extension="ashx" Verbs="GET,HEAD,POST" Script="yes" CheckPath="no" />
+                    <iis:WebApplicationExtension Executable="[FRAMEWORK_ROOT]v2.0.50727\aspnet_isapi.dll" Extension="asmx" Verbs="GET,HEAD,POST" Script="yes" CheckPath="no" />
+                    <iis:WebApplicationExtension Executable="[FRAMEWORK_ROOT]v2.0.50727\aspnet_isapi.dll" Extension="aspx" Verbs="GET,HEAD,POST" Script="yes" CheckPath="no" />
+                    <iis:WebApplicationExtension Executable="[FRAMEWORK_ROOT]v2.0.50727\aspnet_isapi.dll" Extension="axd" Verbs="GET,HEAD,POST" Script="yes" CheckPath="no" />
+                    <iis:WebApplicationExtension Executable="[FRAMEWORK_ROOT]v2.0.50727\aspnet_isapi.dll" Extension="browser" Verbs="GET,HEAD,POST" Script="yes" CheckPath="yes" />
+                    <iis:WebApplicationExtension Executable="[FRAMEWORK_ROOT]v2.0.50727\aspnet_isapi.dll" Extension="cd" Verbs="GET,HEAD,POST" Script="yes" CheckPath="yes" />
+                    <iis:WebApplicationExtension Executable="[FRAMEWORK_ROOT]v2.0.50727\aspnet_isapi.dll" Extension="compiled" Verbs="GET,HEAD,POST" Script="yes" CheckPath="yes" />
+                    <iis:WebApplicationExtension Executable="[FRAMEWORK_ROOT]v2.0.50727\aspnet_isapi.dll" Extension="config" Verbs="GET,HEAD,POST" Script="yes" CheckPath="yes" />
+                    <iis:WebApplicationExtension Executable="[FRAMEWORK_ROOT]v2.0.50727\aspnet_isapi.dll" Extension="csproj" Verbs="GET,HEAD,POST" Script="yes" CheckPath="yes" />
+                    <iis:WebApplicationExtension Executable="[FRAMEWORK_ROOT]v2.0.50727\aspnet_isapi.dll" Extension="dd" Verbs="GET,HEAD,POST" Script="yes" CheckPath="yes" />
+                    <iis:WebApplicationExtension Executable="[FRAMEWORK_ROOT]v2.0.50727\aspnet_isapi.dll" Extension="exclude" Verbs="GET,HEAD,POST" Script="yes" CheckPath="yes" />
+                    <iis:WebApplicationExtension Executable="[FRAMEWORK_ROOT]v2.0.50727\aspnet_isapi.dll" Extension="java" Verbs="GET,HEAD,POST" Script="yes" CheckPath="yes" />
+                    <iis:WebApplicationExtension Executable="[FRAMEWORK_ROOT]v2.0.50727\aspnet_isapi.dll" Extension="jsl" Verbs="GET,HEAD,POST" Script="yes" CheckPath="yes" />
+                    <iis:WebApplicationExtension Executable="[FRAMEWORK_ROOT]v2.0.50727\aspnet_isapi.dll" Extension="ldb" Verbs="GET,HEAD,POST" Script="yes" CheckPath="yes" />
+                    <iis:WebApplicationExtension Executable="[FRAMEWORK_ROOT]v2.0.50727\aspnet_isapi.dll" Extension="ldd" Verbs="GET,HEAD,POST" Script="yes" CheckPath="yes" />
+                    <iis:WebApplicationExtension Executable="[FRAMEWORK_ROOT]v2.0.50727\aspnet_isapi.dll" Extension="lddprototype" Verbs="GET,HEAD,POST" Script="yes" CheckPath="yes" />
+                    <iis:WebApplicationExtension Executable="[FRAMEWORK_ROOT]v2.0.50727\aspnet_isapi.dll" Extension="ldf" Verbs="GET,HEAD,POST" Script="yes" CheckPath="yes" />
+                    <iis:WebApplicationExtension Executable="[FRAMEWORK_ROOT]v2.0.50727\aspnet_isapi.dll" Extension="licx" Verbs="GET,HEAD,POST" Script="yes" CheckPath="yes" />
+                    <iis:WebApplicationExtension Executable="[FRAMEWORK_ROOT]v2.0.50727\aspnet_isapi.dll" Extension="master" Verbs="GET,HEAD,POST" Script="yes" CheckPath="yes" />
+                    <iis:WebApplicationExtension Executable="[FRAMEWORK_ROOT]v2.0.50727\aspnet_isapi.dll" Extension="mdb" Verbs="GET,HEAD,POST" Script="yes" CheckPath="yes" />
+                    <iis:WebApplicationExtension Executable="[FRAMEWORK_ROOT]v2.0.50727\aspnet_isapi.dll" Extension="mdf" Verbs="GET,HEAD,POST" Script="yes" CheckPath="yes" />
+                    <iis:WebApplicationExtension Executable="[FRAMEWORK_ROOT]v2.0.50727\aspnet_isapi.dll" Extension="msgx" Verbs="GET,HEAD,POST" Script="yes" CheckPath="no" />
+                    <iis:WebApplicationExtension Executable="[FRAMEWORK_ROOT]v2.0.50727\aspnet_isapi.dll" Extension="refresh" Verbs="GET,HEAD,POST" Script="yes" CheckPath="yes" />
+                    <iis:WebApplicationExtension Executable="[FRAMEWORK_ROOT]v2.0.50727\aspnet_isapi.dll" Extension="rem" Verbs="GET,HEAD,POST" Script="yes" CheckPath="no" />
+                    <iis:WebApplicationExtension Executable="[FRAMEWORK_ROOT]v2.0.50727\aspnet_isapi.dll" Extension="resources" Verbs="GET,HEAD,POST" Script="yes" CheckPath="yes" />
+                    <iis:WebApplicationExtension Executable="[FRAMEWORK_ROOT]v2.0.50727\aspnet_isapi.dll" Extension="resx" Verbs="GET,HEAD,POST" Script="yes" CheckPath="yes" />
+                    <iis:WebApplicationExtension Executable="[FRAMEWORK_ROOT]v2.0.50727\aspnet_isapi.dll" Extension="sd" Verbs="GET,HEAD,POST" Script="yes" CheckPath="yes" />
+                    <iis:WebApplicationExtension Executable="[FRAMEWORK_ROOT]v2.0.50727\aspnet_isapi.dll" Extension="sdm" Verbs="GET,HEAD,POST" Script="yes" CheckPath="yes" />
+                    <iis:WebApplicationExtension Executable="[FRAMEWORK_ROOT]v2.0.50727\aspnet_isapi.dll" Extension="sdmDocument" Verbs="GET,HEAD,POST" Script="yes" CheckPath="yes" />
+                    <iis:WebApplicationExtension Executable="[FRAMEWORK_ROOT]v2.0.50727\aspnet_isapi.dll" Extension="sitemap" Verbs="GET,HEAD,POST" Script="yes" CheckPath="yes" />
+                    <iis:WebApplicationExtension Executable="[FRAMEWORK_ROOT]v2.0.50727\aspnet_isapi.dll" Extension="skin" Verbs="GET,HEAD,POST" Script="yes" CheckPath="yes" />
+                    <iis:WebApplicationExtension Executable="[FRAMEWORK_ROOT]v2.0.50727\aspnet_isapi.dll" Extension="soap" Verbs="GET,HEAD,POST" Script="yes" CheckPath="no" />
+                    <iis:WebApplicationExtension Executable="[FRAMEWORK_ROOT]v2.0.50727\aspnet_isapi.dll" Extension="svc" Verbs="GET,HEAD,POST" Script="yes" CheckPath="no" />
+                    <iis:WebApplicationExtension Executable="[FRAMEWORK_ROOT]v2.0.50727\aspnet_isapi.dll" Extension="vb" Verbs="GET,HEAD,POST" Script="yes" CheckPath="yes" />
+                    <iis:WebApplicationExtension Executable="[FRAMEWORK_ROOT]v2.0.50727\aspnet_isapi.dll" Extension="vbproj" Verbs="GET,HEAD,POST" Script="yes" CheckPath="yes" />
+                    <iis:WebApplicationExtension Executable="[FRAMEWORK_ROOT]v2.0.50727\aspnet_isapi.dll" Extension="vjsproj" Verbs="GET,HEAD,POST" Script="yes" CheckPath="yes" />
+                    <iis:WebApplicationExtension Executable="[FRAMEWORK_ROOT]v2.0.50727\aspnet_isapi.dll" Extension="vsdisco" Verbs="GET,HEAD,POST" Script="yes" CheckPath="no" />
+                    <iis:WebApplicationExtension Executable="[FRAMEWORK_ROOT]v2.0.50727\aspnet_isapi.dll" Extension="webinfo" Verbs="GET,HEAD,POST" Script="yes" CheckPath="yes" />
+                  </iis:WebApplication>
+                  <iis:WebDirProperties Id="DBAuthServiceAppProperties"
+                      Read="yes"
+                      Write="no"
+                      Script="yes"
+                      Execute="yes"
+                      AnonymousAccess="yes"
+                      LogVisits="yes"
+                      Index="yes"
+                      DefaultDocuments="Default.aspx" />
+                </iis:WebVirtualDir>
+                <util:EventSource Log="Application"
+                  Name="Sequoia DB Authorization Service"
+                  SupportsInformationals="yes"
+                  SupportsErrors="yes"
+                  SupportsWarnings="yes"
+                  SupportsFailureAudits="yes"
+                  SupportsSuccessAudits="yes"
+                  EventMessageFile="$(env.windir)\Microsoft.NET\Framework\v2.0.50727\EventLogMessages.dll" />
+              </Component>
+            </Directory>
+			    </Directory>
+		    </Directory>
+    </Directory>
+      
+    <!-- Create reference to default website in iis - used for xp install -->
+    <iis:WebSite
+        Id="DefaultWebSite"
+        Directory="INSTALLLOCATION"
+        Description="Default Web Site">
+      <iis:WebAddress Id="AllUnassigned" IP="*" Port="80" />
+    </iis:WebSite>
+    
+    <!-- custom action to make sure aspnet is installed on iis successfully -->
+    <Property Id='REGISTERASPNET' Admin='no' Hidden='no' Secure='no'>
+      <DirectorySearch Id='AspNetRegIis_DirSearch' Depth='0' Path='[FRAMEWORK_ROOT]v2.0.50727\'>
+        <FileSearch Id='AspNetRegIisExe_FileSearch' Name='aspnet_regiis.exe'/>
+      </DirectorySearch>
+    </Property>
+    
+    <InstallExecuteSequence>
+      <Custom Action='RegisterAspNetOnIis' Before='ConfigureIIs'>
+        NOT Installed
+      </Custom>
+    </InstallExecuteSequence>
+    
+    <CustomAction Id='RegisterAspNetOnIis' 
+                  Execute='deferred' 
+                  Property='REGISTERASPNET' 
+                  ExeCommand=' -i' 
+                  Return='check'
+                  Impersonate='no'/>
+      
+      <Feature Id="ServiceFeature"
+             Title="Database Authorization Service"
+             Level="1"
+             Absent="disallow">
+			<ComponentRef Id="Comp.ServiceResources" />
+      <ComponentRef Id="Comp.DBAuthService" />
+      <ComponentRef Id="Comp.Core" />
+      <ComponentRef Id="Comp.Encryption" />
+      <ComponentRef Id="Comp.EntLiblls" />
+      <!-- Windows Server 2003 -->
+      <Feature Id="FullWebsite"
+      Title="Complete Independent Website"
+      Level="0"
+      Absent="disallow"
+      Description="Installs the website as its own site using the specified IP and port.">
+        <Condition Level="1">VersionNT = 502</Condition>
+        <ComponentRef Id="Comp.WebSite" />
+      </Feature>
+
+      <!-- Windows XP -->
+      <Feature Id="VirtualDirectoryWebsite"
+        Title="Virtual Directory Website"
+        Level="0"
+        Absent="disallow"
+        Description="Installs the website as a virtual directory under the default website.">
+        <Condition Level="1">VersionNT = 501</Condition>
+        <ComponentRef Id="Comp.VirtualDirectory" />
+      </Feature>
+      
+		</Feature>
+
+    <WixVariable Id="WixUIBannerBmp" Value="$(var.SolutionDir)SolutionItems\Bitmaps\bannrbmp.bmp"/>
+    <WixVariable Id="WixUIDialogBmp" Value="$(var.SolutionDir)SolutionItems\Bitmaps\dlgbmp.bmp"/>
+
+      <UI Id="Sequoia_FeatureTree">
+        <TextStyle Id="WixUI_Font_Normal" FaceName="Tahoma" Size="8" />
+        <TextStyle Id="WixUI_Font_Bigger" FaceName="Tahoma" Size="12" />
+        <TextStyle Id="WixUI_Font_Title" FaceName="Tahoma" Size="9" Bold="yes" />
+
+        <Property Id="DefaultUIFont" Value="WixUI_Font_Normal" />
+        <Property Id="WixUI_Mode" Value="FeatureTree" />
+        <Property Id="IPTEMPLATE" Value="1.0.0.000.000" />
+        <Property Id="ARPNOMODIFY" Value="1" />
+        <Property Id="IPADDRESS" Value="0.0.0.0" />
+        <Property Id="PORT" Value="80"/>
+        <Property Id="DBUSER" Value="sa"/>
+
+        <DialogRef Id="ErrorDlg" />
+        <DialogRef Id="FatalError" />
+        <DialogRef Id="FilesInUse" />
+        <DialogRef Id="MsiRMFilesInUse" />
+        <DialogRef Id="PrepareDlg" />
+        <DialogRef Id="ProgressDlg" />
+        <DialogRef Id="ResumeDlg" />
+        <DialogRef Id="UserExit" />
+
+        <!-- Publish Dialog="ExitDialog" 
+                 Control="Finish" 
+                 Event="DoAction" 
+                 Value="EncryptAppConfiguration" 
+                 Order="999">1</Publish>
+        <Property Id="WIXUI_EXITDIALOGOPTIONALCHECKBOXTEXT" Value="Encrypt Config" / -->
+
+        <Publish Dialog="ExitDialog"
+                 Control="Finish"
+                 Event="EndDialog"
+                 Value="Return"
+                 Order="999">1</Publish>
+
+
+        <Publish Dialog="WelcomeDlg" Control="Next" Event="NewDialog" Value="CustomizeDlg">1</Publish>
+
+        <Publish Dialog="CustomizeDlg" Control="Back" Event="NewDialog" Value="MaintenanceTypeDlg" Order="1">Installed</Publish>
+        <Publish Dialog="CustomizeDlg" Control="Back" Event="NewDialog" Value="WelcomeDlg" Order="2">NOT Installed</Publish>
+        
+        <!-- Skip the Database Info screen for now. Later, we will ask for name of the db server -->
+        <!-- Publish Dialog="CustomizeDlg" Control="Next" Event="NewDialog" Value="DBInfoDlg">1</Publish -->
+        <Publish Dialog="CustomizeDlg" Control="Next" Event="NewDialog" Value="VerifyReadyDlg">VersionNT = 501</Publish>
+        <Publish Dialog="CustomizeDlg" Control="Next" Event="NewDialog" Value="IpInfoDlg">(VersionNT = 502 OR VersionNT = 600 OR VersionNT = 601)</Publish>
+        
+        <Publish Dialog="DBInfoDlg" Control="Back" Event="NewDialog" Value="CustomizeDlg">1</Publish>
+        <Publish Dialog="DBInfoDlg" Control="Next" Event="NewDialog" Value="VerifyReadyDlg">VersionNT = 501</Publish>
+        <!-- If operating System is WinServer 2005, can set IP to configure web site -->
+        <Publish Dialog="DBInfoDlg" Control="Next" Event="NewDialog" Value="IpInfoDlg">VersionNT = 502</Publish>
+        <!-- If operating System is Vista WinServer 2008 or Windows 7, can set IP to configure web site -->
+        <Publish Dialog="DBInfoDlg" Control="Next" Event="NewDialog" Value="IpInfoDlg">(VersionNT = 600 OR VersionNT = 601)</Publish>
+
+        <!-- Skip the Database Info screen for now. Later, we will ask for name of the db server -->
+        <!-- Publish Dialog="IpInfoDlg" Control="Back" Event="NewDialog" Value="DBInfoDlg">1</Publish -->
+        <Publish Dialog="IpInfoDlg" Control="Back" Event="NewDialog" Value="CustomizeDlg">1</Publish>
+        <!--<Publish Dialog="IpInfoDlg" Control="Next" Event="ValidateIpAddress" Value="[IPADDRESS]" Order="1">1</Publish>-->
+        <Publish Dialog="IpInfoDlg" Control="Next" Event="NewDialog" Value="IpConfirmDlg">1</Publish>
+
+        <Publish Dialog="IpConfirmDlg" Control="Back" Event="NewDialog" Value="IpInfoDlg">1</Publish>
+        <Publish Dialog="IpConfirmDlg" Control="Next" Event="NewDialog" Value="VerifyReadyDlg">1</Publish>
+
+        <Publish Dialog="VerifyReadyDlg" Control="Back" Event="NewDialog" Value="CustomizeDlg" Order="1">VersionNT = 501 AND (NOT Installed OR WixUI_InstallMode = "Change")</Publish>
+        <Publish Dialog="VerifyReadyDlg" Control="Back" Event="NewDialog" Value="IpConfirmDlg" Order="1">VersionNT = 502 AND (NOT Installed OR WixUI_InstallMode = "Change")</Publish>
+        <Publish Dialog="VerifyReadyDlg" Control="Back" Event="NewDialog" Value="IpConfirmDlg" Order="1">(VersionNT = 600 OR VersionNT = 601) AND (NOT Installed OR WixUI_InstallMode = "Change")</Publish>
+        <Publish Dialog="VerifyReadyDlg" Control="Back" Event="NewDialog" Value="MaintenanceTypeDlg" Order="2">Installed</Publish>
+
+        <Publish Dialog="MaintenanceWelcomeDlg" Control="Next" Event="NewDialog" Value="MaintenanceTypeDlg">1</Publish>
+
+        <Publish Dialog="MaintenanceTypeDlg" Control="ChangeButton" Event="NewDialog" Value="CustomizeDlg">1</Publish>
+        <Publish Dialog="MaintenanceTypeDlg" Control="RepairButton" Event="NewDialog" Value="VerifyReadyDlg">1</Publish>
+        <Publish Dialog="MaintenanceTypeDlg" Control="RemoveButton" Event="NewDialog" Value="VerifyReadyDlg">1</Publish>
+        <Publish Dialog="MaintenanceTypeDlg" Control="Back" Event="NewDialog" Value="MaintenanceWelcomeDlg">1</Publish>
+
+        <!-- DBInfoDlg was added to get an initial username/pwd. We don't need this now but will need the dbserver name later -->
+        <Dialog Id="DBInfoDlg" Width="370" Height="270" Title="[ProductName] Setup">
+          <Control Id="Title" Type="Text" X="15" Y="6" Width="200" Height="15" Transparent="yes" NoPrefix="yes" Text="{\WixUI_Font_Title}Database Information" />
+          <Control Id="Description" Type="Text" X="25" Y="23" Width="280" Height="15" Transparent="yes" NoPrefix="yes" Text="Enter the following information for the databse" />
+          <Control Id="BannerBitmap" Type="Bitmap" X="0" Y="0" Width="370" Height="44" TabSkip="no" Text="!(loc.InstallDirDlgBannerBitmap)" />
+          <Control Id="BannerLine" Type="Line" X="0" Y="44" Width="370" Height="0" />
+          <Control Id="DBUserNameLabel" Type="Text" X="20" Y="93" Width="290" Height="13" Text="SQL User Name:" />
+          <Control Id="DBUserName" Type="Edit" X="20" Y="105" Width="320" Height="18" Property="DBUSER" Text="[DBUSER]" />
+          <Control Id="DBPasswordLabel" Type="Text" X="20" Y="126" Width="290" Height="13" Text="SQL Password:" />
+          <Control Id="DBPassword" Type="Edit" X="20" Y="138" Width="320" Height="18" Property="DBPASSWORD" />
+          <Control Id="BottomLine" Type="Line" X="0" Y="234" Width="370" Height="0" />
+          <Control Id="Next" Type="PushButton" X="236" Y="243" Width="56" Height="17" Default="yes" Text="Next" />
+          <Control Id="Back" Type="PushButton" X="180" Y="243" Width="56" Height="17" Text="Back" />
+          <Control Id="Cancel" Type="PushButton" X="304" Y="243" Width="56" Height="17" Cancel="yes" Text="Cancel">
+            <Publish Event="SpawnDialog" Value="CancelDlg">1</Publish>
+          </Control>
+        </Dialog>
+        
+        <Dialog Id="IpInfoDlg" Width="370" Height="270" Title="[ProductName] Setup">
+          <Control Id="Title" Type="Text" X="15" Y="6" Width="200" Height="15" Transparent="yes" NoPrefix="yes" Text="{\WixUI_Font_Title}WebSite Information" />
+          <Control Id="Description" Type="Text" X="25" Y="23" Width="280" Height="15" Transparent="yes" NoPrefix="yes" Text="Enter the following information for the web site" />
+          <Control Id="BannerBitmap" Type="Bitmap" X="0" Y="0" Width="370" Height="44" TabSkip="no" Text="!(loc.InstallDirDlgBannerBitmap)" />
+          <Control Id="BannerLine" Type="Line" X="0" Y="44" Width="370" Height="0" />
+
+          <Control Id="IPAddressLabel" Type="Text" X="20" Y="60" Width="290" Height="13" Text="IP Address:" />
+          <Control Id="IpAddress" Type="Edit" X="20" Y="72" Width="320" Height="18" Property="IPADDRESS" Text="[IPTEMPLATE]"/>
+          <Control Id="PortLabel" Type="Text" X="20" Y="93" Width="290" Height="13" Text="Port:" />
+          <Control Id="Port" Type="Edit" X="20" Y="105" Width="320" Height="18" Property="PORT" Text="{53}" />
+          <!--<Control Id="LicenseKeyLabel" Type="Text" X="20" Y="126" Width="290" Height="13" Text="License Key:" />
+                <Control Id="LicenseKey" Type="MaskedEdit" X="20" Y="139" Width="320" Height="15" Property="PIDKEY" Text="[PIDTemplate]" />-->
+
+          <Control Id="BottomLine" Type="Line" X="0" Y="234" Width="370" Height="0" />
+          <Control Id="Next" Type="PushButton" X="236" Y="243" Width="56" Height="17" Default="yes" Text="Next" />
+          <Control Id="Back" Type="PushButton" X="180" Y="243" Width="56" Height="17" Text="Back" />
+          <Control Id="Cancel" Type="PushButton" X="304" Y="243" Width="56" Height="17" Cancel="yes" Text="Cancel">
+            <Publish Event="SpawnDialog" Value="CancelDlg">1</Publish>
+          </Control>
+        </Dialog>
+
+        <Dialog Id="IpConfirmDlg" Width="370" Height="270" Title="[ProductName] Setup">
+          <Control Id="Title" Type="Text" X="15" Y="6" Width="200" Height="15" Transparent="yes" NoPrefix="yes" Text="{\WixUI_Font_Title}WebSite Information" />
+          <Control Id="Description" Type="Text" X="25" Y="23" Width="280" Height="15" Transparent="yes" NoPrefix="yes" Text="Please confirm the website entries." />
+          <Control Id="BannerBitmap" Type="Bitmap" X="0" Y="0" Width="370" Height="44" TabSkip="no" Text="!(loc.InstallDirDlgBannerBitmap)" />
+          <Control Id="BannerLine" Type="Line" X="0" Y="44" Width="370" Height="0" />
+
+          <Control Id="IPAddressLabel" Type="Text" X="20" Y="60" Width="290" Height="13" Text="IP Address:" />
+          <Control Id="IpAddress" Type="Text" X="20" Y="72" Width="320" Height="18" Text="[IPADDRESS]"/>
+          <Control Id="PortLabel" Type="Text" X="20" Y="93" Width="290" Height="13" Text="Port:" />
+          <Control Id="Port" Type="Text" X="20" Y="105" Width="320" Height="18" Text="[PORT]" />
+          <!--<Control Id="LicenseKeyLabel" Type="Text" X="20" Y="126" Width="290" Height="13" Text="License Key:" />
+                <Control Id="LicenseKey" Type="MaskedEdit" X="20" Y="139" Width="320" Height="15" Property="PIDKEY" Text="[PIDTemplate]" />-->
+
+          <Control Id="BottomLine" Type="Line" X="0" Y="234" Width="370" Height="0" />
+          <Control Id="Next" Type="PushButton" X="236" Y="243" Width="56" Height="17" Default="yes" Text="Next" />
+          <Control Id="Back" Type="PushButton" X="180" Y="243" Width="56" Height="17" Text="Back" />
+          <Control Id="Cancel" Type="PushButton" X="304" Y="243" Width="56" Height="17" Cancel="yes" Text="Cancel">
+            <Publish Event="SpawnDialog" Value="CancelDlg">1</Publish>
+          </Control>
+        </Dialog>
+
+      </UI>
+
+      <UIRef Id="WixUI_Common" />
+
+    </Product>
+</Wix>

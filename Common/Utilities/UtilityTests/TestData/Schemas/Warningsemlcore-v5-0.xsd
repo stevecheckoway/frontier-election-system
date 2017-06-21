@@ -1,0 +1,1079 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+	EML Core Schema - contains definitions of core elements re-used by EML
+	
+	History: 4.0 Edited by Paul Spencer (Boynings Consulting) 2005/2006
+	- major release revision
+	
+	5.0 Edited by David RR Webber 2007-02-11
+	- Added additional values to CountQualifier
+	- Added CandidateGender to CandidateIdentifier (issue 2.12)
+	- Added ShortCode to CandidateIdentifier (issue 2.14)
+	- Added DateOfBirth to ProposerStructure (issue 2.18)
+	- Added VoterID and IdType (for US SSN) (issue 2.15)
+	- Added 'NOR' to VotingMethodType for Norse (issue 2.15 / 2.18)
+	- Added 'partisan' to VotingMethodType for USA (issue per NIST)
+	- Added 'Cumulative' to VotingMethodType for USA (issue 2.15 / 2.18)
+	- Added WriteIn type for US and Norse use (issue 2.15 / 2.18)
+	- Added Endorsement for party endorsements of candidates (issue per NIST)
+	5.0 Edited by David RR Webber 2007-05-08
+	- Added Type element token (required) to Affiliation structure
+	- Renamed Party to Supporter as global change in terminology / name
+	5.0 Edited by David RR Webber 2007-05-21
+	- Added support for ballot option / referendum item structure to CandidateStructure for crosslinkage to EML600 ballot option items.
+	5.0 Edited by David RR Webber 2007-05-25
+	- Added support for Count metrics
+	- Added support for Results Reported structure
+	5.0 Edited by David RR Webber 2007-05-29
+	- Changed Count metrics to allow decimal numbers for percentages
+	- Changed Count metrics to add algorithm reference Id and XPath location in reporting structure (needed to reference from 410 to 510)
+	5.0 Edited by David RR Webber 2007-06-06
+	- Corrected Candidate attributes issue
+	- Added IRV and RCV to VotingMethodType
+	5.0 Edited by David RR Webber 2007-06-29
+	- Replaced IdType on VoterId with xsi:type mechanism
+	- Cosmetic change: reordered declarations of element, complexType and simpleType alphabetically
+	- Supporter structure items retained - however implementers are cautioned these are expected to be deprecated in V6 of EML
+	- Added OASIS standard copyright and use and IPR notice here - so it is referenced and applies to each EML schema
+-->
+<!--
+Metadata: Owner: EML (OASIS Election Markup Language TC)
+Product: EML
+Product Version: 5.0
+Artifact Type: Schema
+Stage: os (OASIS Standard)
+Descriptive Name: EML Core - global definitions for EML components
+Revision: None
+Language: en (English)
+Form: xsd (schema)
+Date: 20070629 (29 June 2007)
+  -->
+<!--
+
+Copyright &#169; OASIS&#174; 1993/2007. All Rights Reserved. OASIS trademark, IPR and other policies apply.
+
+All capitalized terms in the following text have the meanings assigned to them in the OASIS Intellectual Property Rights Policy (the "OASIS IPR Policy"). The full Policy may be found at the OASIS website.
+
+This document and translations of it may be copied and furnished to others, and derivative works that comment on or otherwise explain it or assist in its implementation may be prepared, copied, published, and distributed, in whole or in part, without restriction of any kind, provided that the above copyright notice and this section are included on all such copies and derivative works. However, this document itself may not be modified in any way, including by removing the copyright notice or references to OASIS, except as needed for the purpose of developing any document or deliverable produced by an OASIS Technical Committee (in which case the rules applicable to copyrights, as set forth in the OASIS IPR Policy, must be followed) or as required to translate it into languages other than English.
+
+The limited permissions granted above are perpetual and will not be revoked by OASIS or its successors or assigns.
+
+This document and the information contained herein is provided on an "AS IS" basis and OASIS DISCLAIMS ALL WARRANTIES, EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO ANY WARRANTY THAT THE USE OF THE INFORMATION HEREIN WILL NOT INFRINGE ANY OWNERSHIP RIGHTS OR ANY IMPLIED WARRANTIES OF MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE.
+
+OASIS requests that any OASIS Party or any other party that believes it has patent claims that would necessarily be infringed by implementations of this OASIS Committee Specification or OASIS Standard, to notify OASIS TC Administrator and provide an indication of its willingness to grant patent licenses to such patent claims in a manner consistent with the IPR Mode of the OASIS Technical Committee that produced this specification.
+
+OASIS invites any party to contact the OASIS TC Administrator if it is aware of a claim of ownership of any patent claims that would necessarily be infringed by implementations of this specification by a patent holder that is not willing to provide a license to such patent claims in a manner consistent with the IPR Mode of the OASIS Technical Committee that produced this specification. OASIS may include such claims on its website, but disclaims any obligation to do so.
+
+OASIS takes no position regarding the validity or scope of any intellectual property or other rights that might be claimed to pertain to the implementation or use of the technology described in this document or the extent to which any license under such rights might or might not be available; neither does it represent that it has made any effort to identify any such rights. Information on OASIS' procedures with respect to rights in any document or deliverable produced by an OASIS Technical Committee can be found on the OASIS website. Copies of claims of rights made available for publication and any assurances of licenses to be made available, or the result of an attempt made to obtain a general license or permission for the use of such proprietary rights by implementers or users of this OASIS Committee Specification or OASIS Standard, can be obtained from the OASIS TC Administrator. OASIS makes no representation that any information or list of intellectual property rights will at any time be complete, or that any claims in such list are, in fact, Essential Claims.
+
+The names "OASIS", "Election Markup Language (EML)" are trademarks of OASIS, the owner and developer of this specification, and should be used only to refer to the organization and its official outputs. OASIS welcomes reference to, and implementation and use of, specifications, while reserving the right to enforce its marks against misleading uses. Please see http://www.oasis-open.org/who/trademark.php for above guidance.
+  -->
+<xs:schema xmlns:xs="http://www.w3.org/2001/XMLSchema" xmlns:ts="urn:oasis:names:tc:evs:schema:eml:ts" xmlns:ds="http://www.w3.org/2000/09/xmldsig#" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="urn:oasis:names:tc:evs:schema:eml" targetNamespace="urn:oasis:names:tc:evs:schema:eml" elementFormDefault="qualified" attributeFormDefault="unqualified" version="5.0" id="eml-core">
+	<xs:include schemaLocation="emlexternals-v5-0.xsd"/>
+	<xs:import namespace="urn:oasis:names:tc:evs:schema:eml:ts" schemaLocation="external/emltimestamp.xsd"/>
+	<xs:import namespace="http://www.w3.org/2000/09/xmldsig#" schemaLocation="external/xmldsig-core-schema.xsd"/>
+	<xs:element name="Accepted" type="YesNoType"/>
+	<xs:element name="Affiliation" type="AffiliationStructure"/>
+	<xs:element name="AffiliationIdentifier" type="AffiliationIdentifierStructure"/>
+	<xs:element name="Agent" type="AgentStructure"/>
+	<xs:element name="AgentIdentifier" type="AgentIdentifierStructure"/>
+	<xs:element name="Area" type="AreaStructure"/>
+	<xs:element name="AuditInformation" type="AuditInformationStructure"/>
+	<xs:element name="AuthorityIdentifier" type="AuthorityIdentifierStructure"/>
+	<xs:element name="BallotIdentifier" type="BallotIdentifierStructure"/>
+	<xs:element name="BallotIdentifierRange" type="BallotIdentifierRangeStructure"/>
+	<xs:element name="Candidate" type="CandidateStructure"/>
+	<xs:element name="CandidateIdentifier" type="CandidateIdentifierStructure"/>
+	<xs:element name="Channel" type="ChannelStructure"/>
+	<xs:element name="ContactDetails" type="ContactDetailsStructure"/>
+	<xs:element name="ContestIdentifier" type="ContestIdentifierStructure"/>
+	<xs:element name="CountingAlgorithm" type="CountingAlgorithmType"/>
+	<xs:element name="CountMetric" type="CountMetricStructure"/>
+	<xs:element name="CountQualifier" type="CountQualifierStructure"/>
+	<xs:element name="DocumentIdentifier" type="DocumentIdentifierStructure"/>
+	<xs:element name="ElectionIdentifier" type="ElectionIdentifierStructure"/>
+	<xs:element name="ElectionStatement" type="MessagesStructure"/>
+	<xs:element name="Endorsement" type="SupporterStructure"/>
+	<xs:element name="EventIdentifier" type="EventIdentifierStructure"/>
+	<xs:element name="EventQualifier" type="EventQualifierStructure"/>
+	<xs:element name="Gender" type="GenderType"/>
+	<xs:element name="Logo" type="LogoStructure"/>
+	<xs:element name="ManagingAuthority" type="ManagingAuthorityStructure"/>
+	<xs:element name="MaxVotes" type="xs:positiveInteger" default="1"/>
+	<xs:element name= " s34#$%MessageType" type="MessageTypeType"/>
+	<xs:element name="MinVotes" type="xs:nonNegativeInteger" default="0"/>
+	<xs:element name="NominatingOfficer" type="NominatingOfficerStructure"/>
+	<xs:element name="NumberInSequence" type="xs:positiveInteger"/>
+	<xs:element name="NumberOfPositions" type="xs:positiveInteger" default="1"/>
+	<xs:element name="Period" type="PeriodStructure"/>
+	<xs:element name="PersonName" type="PersonNameStructure"/>
+	<xs:element name="PollingDistrict" type="PollingDistrictStructure"/>
+	<xs:element name="PollingPlace" type="PollingPlaceStructure"/>
+	<xs:element name="Position" type="PositionStructure"/>
+	<xs:element name="PreviousElectoralAddress" type="ElectoralAddressStructure"/>
+	<xs:element name="Profile" type="MessagesStructure"/>
+	<xs:element name="Proposal" type="ProposalStructure"/>
+	<xs:element name="ProposalIdentifier" type="ProposalIdentifierStructure"/>
+	<xs:element name="Proposer" type="ProposerStructure"/>
+	<xs:element name="ProposalItem" type="ProposalItemStructure"/>
+	<xs:element name="Proxy" type="ProxyStructure"/>
+	<xs:element name="ReferendumOptionIdentifier" type="ReferendumOptionIdentifierStructure"/>
+	<xs:element name="ReportingUnitIdentifier" type="ReportingUnitIdentifierStructure"/>
+	<xs:element name="ResponsibleOfficer" type="ResponsibleOfficerStructure"/>
+	<xs:element name="ScrutinyRequirement" type="ScrutinyRequirementStructure"/>
+	<xs:element name="Seal" type="SealStructure"/>
+	<xs:element name="SequenceNumber" type="xs:positiveInteger"/>
+	<xs:element name="SupporterIdentifier" type="SupporterIdentifierStructure"/>
+	<xs:element name="TransactionId" type="xs:token"/>
+	<xs:element name="VoterName" type="PersonNameStructure"/>
+	<xs:element name="VotingChannel" type="VotingChannelType"/>
+	<xs:element name="VotingMethod" type="VotingMethodType"/>
+	<xs:element name="VToken" type="VTokenStructure"/>
+	<xs:element name="VTokenQualified" type="VTokenQualifiedStructure"/>
+	<xs:element name="WriteIn" type="WriteInType"/>
+	<xs:complexType name="AffiliationIdentifierStructure">
+		<xs:sequence>
+			<xs:element name="RegisteredName" type="xs:token"/>
+		</xs:sequence>
+		<xs:attributeGroup ref="DisplayIdOpt"/>
+		<xs:attributeGroup ref="PersonalCandidateGroup"/>
+	</xs:complexType>
+	<xs:complexType name="AffiliationStructure">
+		<xs:sequence>
+			<xs:element ref="AffiliationIdentifier"/>
+			<xs:element name="Type" type="xs:token"/>
+			<xs:element name="Description" type="xs:token" minOccurs="0"/>
+			<xs:element ref="Logo" minOccurs="0" maxOccurs="unbounded"/>
+			<xs:any namespace="##other" minOccurs="0" maxOccurs="unbounded"/>
+		</xs:sequence>
+	</xs:complexType>
+	<xs:complexType name="AgentIdentifierStructure">
+		<xs:sequence>
+			<xs:element name="AgentName" type="PersonNameStructure"/>
+		</xs:sequence>
+		<xs:attributeGroup ref="DisplayIdOpt"/>
+	</xs:complexType>
+	<xs:complexType name="AgentStructure">
+		<xs:sequence>
+			<xs:element ref="AgentIdentifier"/>
+			<xs:element ref="Affiliation" minOccurs="0"/>
+			<xs:element name="OfficialAddress" type="OfficialAddressStructure" minOccurs="0"/>
+			<xs:element name="Contact" type="ContactDetailsStructure" minOccurs="0"/>
+			<xs:any namespace="##other" minOccurs="0" maxOccurs="unbounded"/>
+		</xs:sequence>
+		<xs:attributeGroup ref="DisplayIdOpt"/>
+		<xs:attribute name="Role" type="xs:token" use="optional"/>
+	</xs:complexType>
+	<xs:complexType name="AreaStructure">
+		<xs:annotation>
+			<xs:documentation>The geographical area (and its type, such as County) covered by a contest</xs:documentation>
+		</xs:annotation>
+		<xs:simpleContent>
+			<xs:extension base="xs:token">
+				<xs:attribute name="Type" type="xs:token" use="optional"/>
+				<xs:attributeGroup ref="DisplayIdOpt"/>
+			</xs:extension>
+		</xs:simpleContent>
+	</xs:complexType>
+	<xs:complexType name="AuditInformationStructure">
+		<xs:sequence>
+			<xs:element ref="VotingChannel" minOccurs="0"/>
+			<xs:element name="ProcessingUnits" minOccurs="0">
+				<xs:complexType>
+					<xs:sequence>
+						<xs:element name="OriginatingDevice" type="ProcessingUnitStructure" minOccurs="0"/>
+						<xs:element name="Gateway" type="ProcessingUnitStructure" minOccurs="0"/>
+						<xs:element name="VotingSystem" type="ProcessingUnitStructure" minOccurs="0"/>
+						<xs:element name="CountingSystem" type="ProcessingUnitStructure" minOccurs="0"/>
+						<xs:element name="VTokenLoggingSystem" type="ProcessingUnitStructure" minOccurs="0"/>
+						<xs:element name="SealLoggingSystem" type="ProcessingUnitStructure" minOccurs="0"/>
+						<xs:element name="Other" minOccurs="0" maxOccurs="unbounded">
+							<xs:complexType>
+								<xs:complexContent>
+									<xs:extension base="ProcessingUnitStructure">
+										<xs:attribute name="Type" type="xs:token" use="required"/>
+									</xs:extension>
+								</xs:complexContent>
+							</xs:complexType>
+						</xs:element>
+					</xs:sequence>
+				</xs:complexType>
+			</xs:element>
+			<xs:any namespace="##other" minOccurs="0" maxOccurs="unbounded"/>
+		</xs:sequence>
+	</xs:complexType>
+	<xs:complexType name="AuthorityIdentifierStructure">
+		<xs:simpleContent>
+			<xs:extension base="xs:token">
+				<xs:attributeGroup ref="DisplayIdOpt"/>
+			</xs:extension>
+		</xs:simpleContent>
+	</xs:complexType>
+	<xs:complexType name="BallotIdentifierRangeStructure">
+		<xs:sequence>
+			<xs:element name="Start" type="BallotIdentifierStructure"/>
+			<xs:element name="End" type="BallotIdentifierStructure"/>
+		</xs:sequence>
+		<xs:attribute name="Colour" type="xs:token" use="optional"/>
+	</xs:complexType>
+	<xs:complexType name="BallotIdentifierStructure">
+		<xs:sequence>
+			<xs:element name="BallotName" type="xs:token" minOccurs="0"/>
+		</xs:sequence>
+		<xs:attributeGroup ref="DisplayIdMand"/>
+	</xs:complexType>
+	<xs:complexType name="BinaryItemStructure">
+		<xs:choice>
+			<xs:element name="URL" type="xs:anyURI"/>
+			<xs:element name="Binary">
+				<xs:complexType>
+					<xs:simpleContent>
+						<xs:extension base="xs:base64Binary">
+							<xs:attribute name="Format" use="required">
+								<xs:simpleType>
+									<xs:restriction base="xs:NMTOKEN">
+										<xs:enumeration value="gif"/>
+										<xs:enumeration value="gif"/>
+										<xs:enumeration value="jpeg"/>
+										<xs:enumeration value="png"/>
+										<xs:enumeration value="tiff"/>
+									</xs:restriction>
+								</xs:simpleType>
+							</xs:attribute>
+						</xs:extension>
+					</xs:simpleContent>
+				</xs:complexType>
+			</xs:element>
+		</xs:choice>
+		<xs:attributeGroup ref="DisplayIdOpt"/>
+		<xs:attribute name="ItemType" type="xs:token" use="optional"/>
+		<xs:attribute name="Verified" type="YesNoType" use="optional"/>
+		<xs:attribute name="Problem" type="YesNoType" use="optional"/>
+		<xs:attribute name="Notes" type="xs:string" use="optional"/>
+		<xs:attribute name="Role" type="xs:token"/>
+	</xs:complexType>
+	<xs:complexType name="CandidateIdentifierStructure">
+		<xs:sequence>
+			<xs:element name="CandidateName" type="PersonNameType" minOccurs="0"/>
+			<xs:element name="KnownAs" type="xs:token" minOccurs="0"/>
+			<xs:element name="CandidateGender" type="GenderType" minOccurs="0"/>
+			<xs:element name="ShortCode" type="ShortCodeType" minOccurs="0"/>
+		</xs:sequence>
+		<xs:attributeGroup ref="DisplayIdOpt"/>
+		<xs:attributeGroup ref="PersonalCandidateGroup"/>
+	</xs:complexType>
+	<xs:complexType name="CandidateStructure">
+		<xs:sequence>
+			<xs:choice minOccurs="0">
+				<xs:sequence>
+					<xs:element ref="CandidateIdentifier"/>
+					<xs:element name="CandidateFullName" type="PersonNameStructure" minOccurs="0"/>
+					<xs:element name="DateOfBirth" type="xs:date" minOccurs="0"/>
+					<xs:element name="Age" type="xs:positiveInteger" minOccurs="0"/>
+					<xs:element ref="Gender" minOccurs="0"/>
+					<xs:element name="QualifyingAddress" type="QualifyingAddressStructure" minOccurs="0"/>
+					<xs:element name="Contact" type="ContactDetailsStructure" minOccurs="0"/>
+					<xs:choice minOccurs="0">
+						<xs:element ref="Affiliation"/>
+						<xs:element ref="Logo" maxOccurs="unbounded"/>
+					</xs:choice>
+					<xs:element name="Profession" type="xs:token" minOccurs="0"/>
+					<xs:element ref="Agent" minOccurs="0" maxOccurs="unbounded"/>
+					<xs:element name="Photo" type="BinaryItemStructure" minOccurs="0"/>
+					<xs:element ref="Profile" minOccurs="0"/>
+					<xs:element ref="ElectionStatement" minOccurs="0"/>
+					<xs:any namespace="##other" minOccurs="0" maxOccurs="unbounded"/>
+				</xs:sequence>
+				<xs:element ref="ProposalItem"/>
+			</xs:choice>
+		</xs:sequence>
+		<xs:attribute name="DisplayOrder" type="xs:positiveInteger" use="optional"/>
+		<xs:attribute name="Independent" type="YesNoType" use="optional"/>
+	</xs:complexType>
+  <xs:complexType name="ChannelStructure">
+		<xs:sequence>
+			<xs:element name="PreferredChannel" minOccurs="0" maxOccurs="unbounded">
+				<xs:complexType>
+					<xs:simpleContent>
+						<xs:extension base="VotingChannelType">
+							<xs:attribute name="Fixed" type="YesNoType" use="optional"/>
+						</xs:extension>
+					</xs:simpleContent>
+				</xs:complexType>
+			</xs:element>
+			<xs:element ref="Period" minOccurs="0"/>
+			<xs:any namespace="##other" minOccurs="0" maxOccurs="unbounded"/>
+		</xs:sequence>
+	</xs:complexType>
+	<xs:complexType name="ComplexDateRangeStructure">
+		<xs:choice>
+			<xs:element name="SingleDate" type="DateType"/>
+			<xs:element name="End" type="DateType"/>
+			<xs:sequence>
+				<xs:element name="Start" type="DateType"/>
+				<xs:element name="End" type="DateType" minOccurs="0"/>
+			</xs:sequence>
+		</xs:choice>
+		<xs:attribute name="Type" type="xs:token" use="required"/>
+	</xs:complexType>
+	<xs:complexType name="ContactDetailsStructure">
+		<xs:sequence>
+			<xs:element name="MailingAddress" type="MailingAddressStructure" minOccurs="0"/>
+			<xs:element name="Email" type="EmailStructure" minOccurs="0" maxOccurs="unbounded"/>
+			<xs:element name="Telephone" type="TelephoneStructure" minOccurs="0" maxOccurs="unbounded"/>
+			<xs:element name="Fax" type="TelephoneStructure" minOccurs="0" maxOccurs="unbounded"/>
+			<xs:element name="PreferredContact" type="xs:string" minOccurs="0"/>
+			<xs:any namespace="##other" minOccurs="0" maxOccurs="unbounded"/>
+		</xs:sequence>
+		<xs:attribute name="DisplayOrder" type="xs:positiveInteger" use="optional"/>
+	</xs:complexType>
+	<xs:complexType name="ContestIdentifierStructure">
+		<xs:sequence>
+			<xs:element name="ContestName" type="xs:token" minOccurs="0"/>
+		</xs:sequence>
+		<xs:attributeGroup ref="DisplayIdMand"/>
+		<xs:attribute name="ShortCode" type="ShortCodeType" use="optional"/>
+	</xs:complexType>
+	<xs:complexType name="CountMetricStructure">
+		<xs:simpleContent>
+			<xs:extension base="xs:decimal">
+				<xs:attribute name="Type" type="xs:string" use="required"/>
+				<xs:attribute name="Id" type="xs:token" use="optional"/>
+				<xs:attribute name="AlgorithmId" type="xs:token" use="optional"/>
+				<xs:attribute name="PositionXPath" type="xs:string" use="optional"/>
+			</xs:extension>
+		</xs:simpleContent>
+	</xs:complexType>
+	<xs:complexType name="CountQualifierStructure">
+		<xs:sequence>
+			<xs:element name="Simulation" type="YesNoType" minOccurs="0"/>
+			<xs:element name="Final" type="YesNoType" minOccurs="0"/>
+			<xs:element name="Extrapolation" type="YesNoType" minOccurs="0"/>
+			<xs:element name="Partial" type="YesNoType" minOccurs="0"/>
+			<xs:element name="Previous" type="YesNoType" minOccurs="0"/>
+			<xs:any namespace="##other" minOccurs="0" maxOccurs="unbounded"/>
+		</xs:sequence>
+	</xs:complexType>
+	<xs:complexType name="DocumentIdentifierStructure">
+		<xs:simpleContent>
+			<xs:extension base="xs:token">
+				<xs:attribute name="Href" type="xs:anyURI" use="required"/>
+			</xs:extension>
+		</xs:simpleContent>
+	</xs:complexType>
+	<xs:complexType name="ElectionGroupStructure">
+		<xs:simpleContent>
+			<xs:extension base="xs:token">
+				<xs:attribute name="Id" type="xs:token" use="required"/>
+			</xs:extension>
+		</xs:simpleContent>
+	</xs:complexType>
+	<xs:complexType name="ElectionIdentifierStructure">
+		<xs:sequence>
+			<xs:element name="ElectionName" type="xs:token" minOccurs="0"/>
+			<xs:element name="ElectionGroup" type="ElectionGroupStructure" minOccurs="0"/>
+			<xs:element name="ElectionCategory" type="xs:token" minOccurs="0"/>
+			<xs:any namespace="##other" minOccurs="0" maxOccurs="unbounded"/>
+		</xs:sequence>
+		<xs:attributeGroup ref="DisplayIdMand"/>
+		<xs:attribute name="ShortCode" type="ShortCodeType" use="optional"/>
+	</xs:complexType>
+	<xs:complexType name="EmailStructure">
+		<xs:simpleContent>
+			<xs:extension base="EmailType">
+				<xs:attribute name="Preferred" type="YesNoType" use="optional"/>
+			</xs:extension>
+		</xs:simpleContent>
+	</xs:complexType>
+	<xs:complexType name="EMLstructure">
+		<xs:sequence>
+			<xs:element ref="TransactionId"/>
+			<xs:sequence minOccurs="0">
+				<xs:element ref="SequenceNumber"/>
+				<xs:element ref="NumberInSequence"/>
+				<xs:element name="SequencedElementName" type="xs:NMTOKEN"/>
+			</xs:sequence>
+			<xs:element name="AdditionalValidation" minOccurs="0">
+				<xs:complexType>
+					<xs:sequence>
+						<xs:element name="Location" type="xs:anyURI"/>
+						<xs:element name="Type" type="xs:anyURI"/>
+					</xs:sequence>
+				</xs:complexType>
+			</xs:element>
+			<xs:element name="MessageLanguage" type="LanguageType" minOccurs="0"/>
+			<xs:element name="RequestedResponseLanguage" type="LanguageType" minOccurs="0"/>
+			<xs:element ref="ManagingAuthority" minOccurs="0"/>
+			<xs:element name="IssueDate" type="DateType" minOccurs="0"/>
+			<xs:element name="Display" minOccurs="0" maxOccurs="unbounded">
+				<xs:complexType>
+					<xs:sequence>
+						<xs:element name="Stylesheet" maxOccurs="unbounded">
+							<xs:complexType>
+								<xs:simpleContent>
+									<xs:extension base="xs:anyURI">
+										<xs:attribute name="Type" type="xs:token" use="required"/>
+									</xs:extension>
+								</xs:simpleContent>
+							</xs:complexType>
+						</xs:element>
+					</xs:sequence>
+					<xs:attribute name="Format" type="xs:NMTOKEN" use="optional"/>
+				</xs:complexType>
+			</xs:element>
+			<xs:element ref="Seal" minOccurs="0"/>
+			<xs:any namespace="##other" minOccurs="0" maxOccurs="unbounded"/>
+		</xs:sequence>
+		<xs:attribute name="Id" type="MessageTypeType" use="required"/>
+		<xs:attribute name="SchemaVersion" type="xs:NMTOKEN" use="required"/>
+	</xs:complexType>
+	<xs:complexType name="EventIdentifierStructure">
+		<xs:sequence>
+			<xs:element name="EventName" type="xs:token" minOccurs="0"/>
+			<xs:element name="EventQualifier" type="EventQualifierStructure" minOccurs="0"/>
+		</xs:sequence>
+		<xs:attributeGroup ref="DisplayIdOpt"/>
+	</xs:complexType>
+	<xs:complexType name="EventQualifierStructure">
+		<xs:simpleContent>
+			<xs:extension base="xs:token">
+				<xs:attribute name="Id" type="xs:NMTOKEN" use="optional"/>
+			</xs:extension>
+		</xs:simpleContent>
+	</xs:complexType>
+	<xs:complexType name="IncomingGenericCommunicationStructure">
+		<xs:sequence>
+			<xs:element name="Voter">
+				<xs:complexType>
+					<xs:sequence>
+						<xs:element name="VoterIdentification" type="VoterIdentificationStructure"/>
+						<xs:element name="VoterContact" type="ContactDetailsStructure"/>
+						<xs:element ref="Proxy" minOccurs="0"/>
+					</xs:sequence>
+				</xs:complexType>
+			</xs:element>
+			<xs:element name="Recipient" type="ResponsibleOfficerStructure" minOccurs="0"/>
+			<xs:element ref="EventIdentifier" minOccurs="0"/>
+			<xs:element ref="ElectionIdentifier" minOccurs="0"/>
+			<xs:element ref="ContestIdentifier" minOccurs="0"/>
+			<xs:element name="Messages" type="MessagesStructure" minOccurs="0"/>
+		</xs:sequence>
+	</xs:complexType>
+	<xs:complexType name="InternalGenericCommunicationStructure">
+		<xs:sequence>
+			<xs:element name="From" minOccurs="0">
+				<xs:complexType>
+					<xs:sequence>
+						<xs:any namespace="##targetNamespace" maxOccurs="unbounded"/>
+					</xs:sequence>
+				</xs:complexType>
+			</xs:element>
+			<xs:element name="To" minOccurs="0">
+				<xs:complexType>
+					<xs:sequence>
+						<xs:any namespace="##targetNamespace" maxOccurs="unbounded"/>
+					</xs:sequence>
+				</xs:complexType>
+			</xs:element>
+			<xs:element ref="EventIdentifier" minOccurs="0"/>
+			<xs:element ref="ElectionIdentifier" minOccurs="0"/>
+			<xs:element ref="ContestIdentifier" minOccurs="0"/>
+			<xs:element name="Messages" type="MessagesStructure" minOccurs="0"/>
+		</xs:sequence>
+	</xs:complexType>
+	<xs:complexType name="LogoStructure">
+		<xs:complexContent>
+			<xs:extension base="BinaryItemStructure"/>
+		</xs:complexContent>
+	</xs:complexType>
+	<xs:complexType name="ManagingAuthorityStructure">
+		<xs:sequence>
+			<xs:element ref="AuthorityIdentifier"/>
+			<xs:element name="AuthorityAddress" type="AuthorityAddressStructure"/>
+			<xs:element ref="ResponsibleOfficer" minOccurs="0" maxOccurs="unbounded"/>
+			<xs:element ref="Logo" minOccurs="0"/>
+			<xs:any namespace="##other" minOccurs="0" maxOccurs="unbounded"/>
+		</xs:sequence>
+	</xs:complexType>
+	<xs:complexType name="MessagesStructure">
+		<xs:sequence>
+			<xs:element name="Message" maxOccurs="unbounded">
+				<xs:complexType mixed="true">
+					<xs:sequence>
+						<xs:any namespace="##other" processContents="lax" minOccurs="0" maxOccurs="unbounded"/>
+					</xs:sequence>
+					<xs:attribute name="Format" type="xs:NMTOKEN" use="optional"/>
+					<xs:attribute name="Type" type="xs:token" use="optional"/>
+					<xs:attribute name="Lang" type="LanguageType" use="optional"/>
+				</xs:complexType>
+			</xs:element>
+		</xs:sequence>
+		<xs:attribute name="DisplayOrder" type="xs:positiveInteger" use="optional"/>
+	</xs:complexType>
+	<xs:complexType name="NominatingOfficerStructure">
+		<xs:sequence>
+			<xs:element name="Name" type="PersonNameStructure"/>
+			<xs:element name="Contact" type="ContactDetailsStructure"/>
+			<xs:any namespace="##other" minOccurs="0" maxOccurs="unbounded"/>
+		</xs:sequence>
+	</xs:complexType>
+	<xs:complexType name="OutgoingGenericCommunicationStructure">
+		<xs:annotation>
+			<xs:documentation>Note that this can include multiple voters to allow communication with a distributor.</xs:documentation>
+		</xs:annotation>
+		<xs:sequence>
+			<xs:element name="Voter" maxOccurs="unbounded">
+				<xs:complexType>
+					<xs:sequence>
+						<xs:element name="VoterIdentification" type="VoterIdentificationStructure"/>
+						<xs:element name="VoterContact" type="ContactDetailsStructure"/>
+						<xs:element ref="Proxy" minOccurs="0"/>
+					</xs:sequence>
+				</xs:complexType>
+			</xs:element>
+			<xs:element ref="EventIdentifier" minOccurs="0"/>
+			<xs:element ref="ElectionIdentifier" minOccurs="0"/>
+			<xs:element ref="ContestIdentifier" minOccurs="0"/>
+			<xs:element name="ReturnTo" type="ResponsibleOfficerStructure" minOccurs="0"/>
+			<xs:element name="Messages" type="MessagesStructure" minOccurs="0"/>
+		</xs:sequence>
+	</xs:complexType>
+	<xs:complexType name="PeriodStructure">
+		<xs:choice>
+			<xs:element name="Dates">
+				<xs:complexType>
+					<xs:sequence>
+						<xs:element name="Start" type="xs:date" minOccurs="0"/>
+						<xs:element name="End" type="xs:date"/>
+					</xs:sequence>
+				</xs:complexType>
+			</xs:element>
+			<xs:element name="Event" maxOccurs="unbounded">
+				<xs:complexType>
+					<xs:sequence>
+						<xs:element ref="EventIdentifier"/>
+						<xs:element ref="ElectionIdentifier" minOccurs="0" maxOccurs="unbounded"/>
+					</xs:sequence>
+				</xs:complexType>
+			</xs:element>
+			<xs:element name="Permanent">
+				<xs:simpleType>
+					<xs:restriction base="xs:token">
+						<xs:enumeration value="yes"/>
+					</xs:restriction>
+				</xs:simpleType>
+			</xs:element>
+		</xs:choice>
+	</xs:complexType>
+	<xs:complexType name="PollingDistrictStructure">
+		<xs:sequence>
+			<xs:element name="Name" type="xs:token" minOccurs="0"/>
+			<xs:element name="Association" minOccurs="0" maxOccurs="unbounded">
+				<xs:complexType>
+					<xs:simpleContent>
+						<xs:extension base="xs:token">
+							<xs:attribute name="Id" type="xs:token" use="optional"/>
+						</xs:extension>
+					</xs:simpleContent>
+				</xs:complexType>
+			</xs:element>
+		</xs:sequence>
+		<xs:attributeGroup ref="DisplayIdOpt"/>
+	</xs:complexType>
+	<xs:complexType name="PollingPlaceStructure">
+		<xs:sequence>
+			<xs:choice>
+				<xs:element name="PhysicalLocation">
+					<xs:complexType>
+						<xs:sequence>
+							<xs:element name="Address" type="PhysicalAddressStructure"/>
+							<xs:element name="PollingStation" minOccurs="0" maxOccurs="unbounded">
+								<xs:complexType>
+									<xs:simpleContent>
+										<xs:extension base="xs:token">
+											<xs:attribute name="Id" type="xs:NMTOKEN" use="optional"/>
+										</xs:extension>
+									</xs:simpleContent>
+								</xs:complexType>
+							</xs:element>
+							<xs:element name="Map" type="BinaryItemStructure" minOccurs="0"/>
+						</xs:sequence>
+						<xs:attribute name="Id" type="xs:NMTOKEN" use="optional"/>
+					</xs:complexType>
+				</xs:element>
+				<xs:element name="PostalLocation">
+					<xs:complexType>
+						<xs:complexContent>
+							<xs:extension base="PostalLocationStructure">
+								<xs:attributeGroup ref="DisplayIdOpt"/>
+							</xs:extension>
+						</xs:complexContent>
+					</xs:complexType>
+				</xs:element>
+				<xs:element name="ElectronicLocation">
+					<xs:complexType>
+						<xs:simpleContent>
+							<xs:extension base="xs:token">
+								<xs:attributeGroup ref="DisplayIdOpt"/>
+							</xs:extension>
+						</xs:simpleContent>
+					</xs:complexType>
+				</xs:element>
+				<xs:element name="OtherLocation">
+					<xs:complexType>
+						<xs:simpleContent>
+							<xs:extension base="xs:string">
+								<xs:attributeGroup ref="DisplayIdOpt"/>
+							</xs:extension>
+						</xs:simpleContent>
+					</xs:complexType>
+				</xs:element>
+			</xs:choice>
+			<xs:element name="TimeAvailable" minOccurs="0" maxOccurs="unbounded">
+				<xs:complexType>
+					<xs:sequence>
+						<xs:element name="Start" type="xs:dateTime"/>
+						<xs:element name="End" type="xs:dateTime"/>
+					</xs:sequence>
+				</xs:complexType>
+			</xs:element>
+			<xs:element name="ResultsReported" type="ResultsReportedStructure" minOccurs="0" maxOccurs="unbounded"/>
+		</xs:sequence>
+		<xs:attribute name="Channel" type="VotingChannelType" use="required"/>
+		<xs:attribute name="DisplayOrder" type="xs:positiveInteger" use="optional"/>
+	</xs:complexType>
+	<xs:complexType name="PositionStructure">
+		<xs:simpleContent>
+			<xs:extension base="xs:token">
+				<xs:attributeGroup ref="DisplayIdOpt"/>
+			</xs:extension>
+		</xs:simpleContent>
+	</xs:complexType>
+	<xs:complexType name="ProcessingUnitStructure">
+		<xs:sequence>
+			<xs:element name="Name" type="xs:token" minOccurs="0"/>
+			<xs:element name="Id" type="xs:token"/>
+		</xs:sequence>
+		<xs:attribute name="Role" use="required">
+			<xs:simpleType>
+				<xs:restriction base="xs:token">
+					<xs:enumeration value="next receiver"/>
+					<xs:enumeration value="previous sender"/>
+					<xs:enumeration value="receiver"/>
+					<xs:enumeration value="sender"/>
+					<xs:enumeration value=""/>
+				</xs:restriction>
+			</xs:simpleType>
+		</xs:attribute>
+	</xs:complexType>
+	<xs:complexType name="ProposalIdentifierStructure">
+		<xs:sequence>
+			<xs:element name="ProposalName" type="xs:token" minOccurs="0"/>
+		</xs:sequence>
+		<xs:attributeGroup ref="DisplayIdOpt"/>
+		<xs:attribute name="ShortCode" type="ShortCodeType" use="optional"/>
+		<xs:attribute name="ExpectedConfirmationReference" type="ConfirmationReferenceType" use="optional"/>
+	</xs:complexType>
+	<xs:complexType name="ProposalItemStructure">
+		<xs:sequence>
+			<xs:element name="ProposalText" type="xs:string" minOccurs="0"/>
+			<xs:element name="SelectionText" type="xs:string" minOccurs="0"/>
+			<xs:any namespace="##other" minOccurs="0" maxOccurs="unbounded"/>
+		</xs:sequence>
+		<xs:attribute name="ReferendumOptionIdentifier" type="xs:token"/>
+		<xs:attribute name="ProposalIdentifier" type="xs:token" use="optional"/>
+		<xs:attribute name="Lang" type="LanguageType" use="optional"/>
+	</xs:complexType>
+	<xs:complexType name="ProposalStructure">
+		<xs:sequence>
+			<xs:choice>
+				<xs:sequence>
+					<xs:element ref="ProposalIdentifier"/>
+					<xs:element name="Description" type="MessagesStructure" minOccurs="0"/>
+					<xs:element name="Options">
+						<xs:complexType>
+							<xs:sequence>
+								<xs:element ref="ReferendumOptionIdentifier" maxOccurs="unbounded"/>
+							</xs:sequence>
+						</xs:complexType>
+					</xs:element>
+					<xs:any namespace="##other" processContents="lax" minOccurs="0" maxOccurs="unbounded"/>
+				</xs:sequence>
+				<xs:element ref="ProposalItem"/>
+			</xs:choice>
+		</xs:sequence>
+		<xs:attribute name="Type" type="xs:token" use="optional"/>
+	</xs:complexType>
+	<xs:complexType name="ProposerStructure">
+		<xs:sequence>
+			<xs:element name="Name" type="PersonNameStructure"/>
+			<xs:element name="Contact" type="ContactDetailsStructure" minOccurs="0"/>
+			<xs:element name="JobTitle" type="xs:token" minOccurs="0"/>
+			<xs:element name="DateOfBirth" type="xs:date" minOccurs="0"/>
+			<xs:element name="Id" minOccurs="0" maxOccurs="unbounded">
+				<xs:complexType>
+					<xs:simpleContent>
+						<xs:extension base="xs:token"/>
+					</xs:simpleContent>
+				</xs:complexType>
+			</xs:element>
+			<xs:any namespace="##other" minOccurs="0" maxOccurs="unbounded"/>
+		</xs:sequence>
+		<xs:attribute name="Category" use="optional">
+			<xs:simpleType>
+				<xs:restriction base="xs:token">
+					<xs:enumeration value="primary"/>
+					<xs:enumeration value="secondary"/>
+					<xs:enumeration value="other"/>
+				</xs:restriction>
+			</xs:simpleType>
+		</xs:attribute>
+	</xs:complexType>
+	<xs:complexType name="ProxyStructure">
+		<xs:sequence>
+			<xs:choice>
+				<xs:element name="Position" type="xs:token"/>
+				<xs:sequence>
+					<xs:element name="Name" type="PersonNameStructure"/>
+					<xs:element name="Position" type="xs:token" minOccurs="0"/>
+				</xs:sequence>
+			</xs:choice>
+			<xs:element name="Address" type="ProxyAddressStructure" minOccurs="0"/>
+			<xs:element name="DateOfBirth" type="xs:date" minOccurs="0"/>
+			<xs:element name="Qualification" type="xs:token" minOccurs="0"/>
+			<xs:element name="Reason" type="xs:token" minOccurs="0"/>
+			<xs:element ref="Period" minOccurs="0"/>
+			<xs:element name="ProxyAgrees" type="YesNoType" minOccurs="0"/>
+			<xs:element name="PreferredLanguage" type="LanguageType" minOccurs="0"/>
+			<xs:element ref="Channel" minOccurs="0" maxOccurs="unbounded"/>
+			<xs:choice minOccurs="0">
+				<xs:element ref="VToken"/>
+				<xs:element ref="VTokenQualified"/>
+			</xs:choice>
+			<xs:any namespace="##other" minOccurs="0" maxOccurs="unbounded"/>
+		</xs:sequence>
+		<xs:attribute name="DisplayOrder" type="xs:positiveInteger" use="optional"/>
+		<xs:attribute name="Id" type="xs:NMTOKEN" use="optional"/>
+	</xs:complexType>
+	<xs:complexType name="ReferendumOptionIdentifierStructure">
+		<xs:simpleContent>
+			<xs:extension base="xs:token">
+				<xs:attributeGroup ref="DisplayIdOpt"/>
+				<xs:attributeGroup ref="PersonalCandidateGroup"/>
+			</xs:extension>
+		</xs:simpleContent>
+	</xs:complexType>
+	<xs:complexType name="ReportingUnitIdentifierStructure">
+		<xs:simpleContent>
+			<xs:extension base="xs:token">
+				<xs:attributeGroup ref="DisplayIdOpt"/>
+			</xs:extension>
+		</xs:simpleContent>
+	</xs:complexType>
+	<xs:complexType name="ResultsReportedStructure">
+		<xs:sequence>
+			<xs:element name="Status">
+				<xs:complexType>
+					<xs:sequence>
+						<xs:element name="ChannelID" type="xs:string" minOccurs="0"/>
+						<xs:element name="Notes" type="xs:string" minOccurs="0"/>
+					</xs:sequence>
+					<xs:attribute name="DateTime" type="xs:dateTime"/>
+					<xs:attribute name="Type" type="xs:NMTOKEN" use="optional"/>
+				</xs:complexType>
+			</xs:element>
+		</xs:sequence>
+		<xs:attribute name="CurrentStatus" type="xs:NMTOKEN" use="optional"/>
+	</xs:complexType>
+	<xs:complexType name="ResponsibleOfficerStructure">
+		<xs:sequence>
+			<xs:choice>
+				<xs:sequence>
+					<xs:element name="Responsibility" type="xs:token"/>
+					<xs:element name="Name" type="PersonNameStructure" minOccurs="0"/>
+				</xs:sequence>
+				<xs:element name="Name" type="PersonNameStructure"/>
+			</xs:choice>
+			<xs:element name="Contact" type="ContactDetailsStructure" minOccurs="0"/>
+			<xs:any namespace="##other" minOccurs="0" maxOccurs="unbounded"/>
+		</xs:sequence>
+		<xs:attribute name="Id" type="xs:NMTOKEN" use="optional"/>
+	</xs:complexType>
+	<xs:complexType name="ScrutinyRequirementStructure">
+		<xs:simpleContent>
+			<xs:extension base="xs:token"/>
+		</xs:simpleContent>
+	</xs:complexType>
+	<xs:complexType name="SealStructure">
+		<xs:choice>
+			<xs:element ref="ds:Signature"/>
+			<xs:element ref="ts:Timestamp"/>
+			<xs:element name="OtherSeal">
+				<xs:complexType>
+					<xs:sequence>
+						<xs:any namespace="##other"/>
+					</xs:sequence>
+					<xs:attribute name="Type" type="xs:token" use="required"/>
+				</xs:complexType>
+			</xs:element>
+		</xs:choice>
+	</xs:complexType>
+	<xs:complexType name="SimpleDateRangeStructure">
+		<xs:sequence>
+			<xs:element name="Start" type="DateType"/>
+			<xs:element name="End" type="DateType"/>
+		</xs:sequence>
+	</xs:complexType>
+	<xs:complexType name="SupporterIdentifierStructure">
+		<xs:sequence>
+			<xs:element name="SupporterName" type="xs:token"/>
+			<xs:element name="SupporterAbbreviation" type="xs:token"/>
+			<xs:element name="RegisteredFullName" type="xs:normalizedString"/>
+			<xs:element name="AlternativeName" type="xs:normalizedString"/>
+		</xs:sequence>
+		<xs:attributeGroup ref="DisplayIdOpt"/>
+	</xs:complexType>
+	<xs:complexType name="SupporterStructure">
+		<xs:sequence>
+			<xs:element ref="SupporterIdentifier"/>
+			<xs:element ref="Logo" minOccurs="0" maxOccurs="unbounded"/>
+			<xs:any namespace="##other" minOccurs="0" maxOccurs="unbounded"/>
+		</xs:sequence>
+	</xs:complexType>
+	<xs:complexType name="TelephoneStructure">
+		<xs:sequence>
+			<xs:element name="Number" type="TelephoneNumberType"/>
+			<xs:element name="Extension" minOccurs="0">
+				<xs:simpleType>
+					<xs:restriction base="xs:token">
+						<xs:maxLength value="6"/>
+						<xs:minLength value="1"/>
+						<xs:pattern value="[0-9]{1,6}"/>
+					</xs:restriction>
+				</xs:simpleType>
+			</xs:element>
+		</xs:sequence>
+		<xs:attribute name="Preferred" type="YesNoType" use="optional"/>
+		<xs:attribute name="Mobile" type="YesNoType" use="optional"/>
+	</xs:complexType>
+	<xs:complexType name="VoterIdentificationStructure">
+		<xs:sequence>
+			<xs:element ref="VoterName" minOccurs="0"/>
+			<xs:element name="ElectoralAddress" type="ElectoralAddressStructure" minOccurs="0">
+				<xs:annotation>
+					<xs:documentation>This is the address that gives the voter the right to vote</xs:documentation>
+				</xs:annotation>
+			</xs:element>
+			<xs:element name="PreviousElectoralAddress" type="ElectoralAddressStructure" minOccurs="0"/>
+			<xs:choice minOccurs="0">
+				<xs:element ref="VToken"/>
+				<xs:element ref="VTokenQualified"/>
+			</xs:choice>
+			<xs:element name="VoterId" type="xs:string" minOccurs="0" maxOccurs="unbounded"/>
+			<!-- attribute - use xsi localization definition - e.g. xsi:type="driverslicense" content mechanism to control content mask for permitted VoterId values -->
+			<xs:element name="VoterSignature" type="BinaryItemStructure" minOccurs="0"/>
+			<xs:any namespace="##other" minOccurs="0" maxOccurs="unbounded"/>
+		</xs:sequence>
+		<xs:attribute name="DisplayOrder" type="xs:positiveInteger" use="optional"/>
+		<xs:attribute name="Id" type="xs:anySimpleType" use="optional"/>
+	</xs:complexType>
+	<xs:complexType name="VoterInformationStructure">
+		<xs:sequence>
+			<xs:element name="Contact" minOccurs="0" maxOccurs="unbounded">
+				<xs:complexType>
+					<xs:complexContent>
+						<xs:extension base="ContactDetailsStructure">
+							<xs:attribute name="ElectionId" type="xs:NMTOKEN" use="optional"/>
+						</xs:extension>
+					</xs:complexContent>
+				</xs:complexType>
+			</xs:element>
+			<xs:element name="DateOfBirth" type="xs:date" minOccurs="0"/>
+			<xs:element name="PlaceOfBirth" type="xs:token" minOccurs="0"/>
+			<xs:element name="EffectiveDateAdded" type="xs:date" minOccurs="0"/>
+			<xs:element name="EffectiveDateRemoved" type="xs:date" minOccurs="0"/>
+			<xs:element name="PreferredLanguage" type="LanguageType" minOccurs="0"/>
+			<xs:element ref="Channel" minOccurs="0" maxOccurs="unbounded"/>
+			<xs:element name="Qualifier" type="xs:token" minOccurs="0" maxOccurs="unbounded">
+				<xs:annotation>
+					<xs:documentation>e.g. military or other factor that may affect right to vote or how votes are managed</xs:documentation>
+				</xs:annotation>
+			</xs:element>
+			<xs:element name="CheckBox" minOccurs="0" maxOccurs="unbounded">
+				<xs:complexType>
+					<xs:simpleContent>
+						<xs:extension base="YesNoType">
+							<xs:attribute name="Type" type="xs:token" use="required"/>
+						</xs:extension>
+					</xs:simpleContent>
+				</xs:complexType>
+			</xs:element>
+			<xs:element name="Eligibility" type="xs:token" minOccurs="0" maxOccurs="unbounded">
+				<xs:annotation>
+					<xs:documentation>The election types for which the voter is eligible.</xs:documentation>
+				</xs:annotation>
+			</xs:element>
+			<xs:element ref="PollingDistrict" minOccurs="0"/>
+			<xs:element ref="PollingPlace" minOccurs="0" maxOccurs="unbounded"/>
+			<xs:element name="Affiliation" type="xs:token" minOccurs="0"/>
+			<xs:element name="Gender" minOccurs="0">
+				<xs:simpleType>
+					<xs:restriction base="xs:token">
+						<xs:enumeration value="male"/>
+						<xs:enumeration value="female"/>
+						<xs:enumeration value="unknown"/>
+					</xs:restriction>
+				</xs:simpleType>
+			</xs:element>
+			<xs:element name="Nationality" type="xs:token" minOccurs="0"/>
+			<xs:element name="Ethnicity" type="xs:token" minOccurs="0"/>
+			<xs:element name="SpecialRequest" type="xs:token" minOccurs="0" maxOccurs="unbounded"/>
+			<xs:element ref="Proxy" minOccurs="0" maxOccurs="unbounded"/>
+			<xs:element name="FurtherInformation" type="MessagesStructure" minOccurs="0"/>
+			<xs:any namespace="##other" minOccurs="0" maxOccurs="unbounded"/>
+		</xs:sequence>
+		<xs:attributeGroup ref="DisplayIdOpt"/>
+	</xs:complexType>
+	<xs:complexType name="VTokenStructure">
+		<xs:sequence>
+			<xs:element name="Component" maxOccurs="unbounded">
+				<xs:complexType mixed="true">
+					<xs:sequence>
+						<xs:any namespace="##other" minOccurs="0"/>
+					</xs:sequence>
+				</xs:complexType>
+			</xs:element>
+		</xs:sequence>
+	</xs:complexType>
+	<xs:complexType name="VTokenQualifiedStructure">
+		<xs:complexContent>
+			<xs:extension base="VTokenStructure">
+				<xs:sequence>
+					<xs:element name="Reason">
+						<xs:complexType>
+							<xs:simpleContent>
+								<xs:extension base="xs:token">
+									<xs:attribute name="Type" type="xs:token" use="required"/>
+								</xs:extension>
+							</xs:simpleContent>
+						</xs:complexType>
+					</xs:element>
+					<xs:element ref="VToken" minOccurs="0"/>
+				</xs:sequence>
+			</xs:extension>
+		</xs:complexContent>
+	</xs:complexType>
+	<xs:simpleType name="ConfirmationReferenceType">
+		<xs:restriction base="xs:token"/>
+	</xs:simpleType>
+	<xs:simpleType name="CountingAlgorithmType">
+		<xs:restriction base="xs:token"/>
+	</xs:simpleType>
+	<xs:simpleType name="DateType">
+		<xs:union memberTypes="xs:date xs:dateTime"/>
+	</xs:simpleType>
+	<xs:simpleType name="EmailType">
+		<xs:restriction base="xs:token">
+			<xs:maxLength value="129"/>
+			<xs:pattern value="[^@]+@[^@]+"/>
+		</xs:restriction>
+	</xs:simpleType>
+	<xs:simpleType name="ErrorCodeType">
+		<xs:restriction base="xs:token">
+			<xs:pattern value="\d{4}[a-z]?\-\d{3}"/>
+		</xs:restriction>
+	</xs:simpleType>
+	<xs:simpleType name="GenderType">
+		<xs:restriction base="xs:token">
+			<xs:enumeration value="male"/>
+			<xs:enumeration value="female"/>
+			<xs:enumeration value="unknown"/>
+		</xs:restriction>
+	</xs:simpleType>
+	<xs:simpleType name="LanguageType">
+		<xs:restriction base="xs:language"/>
+	</xs:simpleType>
+	<xs:simpleType name="MessageTypeType">
+		<xs:restriction base="xs:NMTOKEN"/>
+	</xs:simpleType>
+	<xs:simpleType name="SealUsageType">
+		<xs:restriction base="xs:NMTOKEN">
+			<xs:enumeration value="receiver"/>
+			<xs:enumeration value="sender"/>
+		</xs:restriction>
+	</xs:simpleType>
+	<xs:simpleType name="ShortCodeType">
+		<xs:restriction base="xs:NMTOKEN"/>
+	</xs:simpleType>
+	<xs:simpleType name="TelephoneNumberType">
+		<xs:restriction base="xs:token">
+			<xs:maxLength value="35"/>
+			<xs:minLength value="1"/>
+			<xs:pattern value="\+?[0-9\(\)\-\s]{1,35}"/>
+		</xs:restriction>
+	</xs:simpleType>
+	<xs:simpleType name="VotingChannelType">
+		<xs:restriction base="xs:token">
+			<xs:enumeration value="SMS"/>
+			<xs:enumeration value="WAP"/>
+			<xs:enumeration value="digitalTV"/>
+			<xs:enumeration value="internet"/>
+			<xs:enumeration value="kiosk"/>
+			<xs:enumeration value="polling"/>
+			<xs:enumeration value="postal"/>
+			<xs:enumeration value="telephone"/>
+			<xs:enumeration value="other"/>
+		</xs:restriction>
+	</xs:simpleType>
+	<xs:simpleType name="VotingMethodType">
+		<xs:restriction base="xs:token">
+			<xs:enumeration value="AMS"/>
+			<xs:enumeration value="FPP"/>
+			<xs:enumeration value="IRV"/>
+			<xs:enumeration value="NOR"/>
+			<xs:enumeration value="OPV"/>
+			<xs:enumeration value="RCV"/>
+			<xs:enumeration value="SPV"/>
+			<xs:enumeration value="STV"/>
+			<xs:enumeration value="cumulative"/>
+			<xs:enumeration value="approval"/>
+			<xs:enumeration value="block"/>
+			<xs:enumeration value="supporterlist"/>
+			<xs:enumeration value="partisan"/>
+			<xs:enumeration value="supplementaryvote"/>
+			<xs:enumeration value="other"/>
+		</xs:restriction>
+	</xs:simpleType>
+	<xs:simpleType name="VotingValueType">
+		<xs:annotation>
+			<xs:documentation>The weight or preference applied to a selection</xs:documentation>
+		</xs:annotation>
+		<xs:restriction base="xs:positiveInteger"/>
+	</xs:simpleType>
+	<xs:simpleType name="WriteInType">
+		<xs:restriction base="xs:token">
+			<xs:enumeration value="allowed"/>
+			<xs:enumeration value="none"/>
+			<xs:enumeration value="strikeout"/>
+			<xs:enumeration value="other"/>
+		</xs:restriction>
+	</xs:simpleType>
+	<xs:simpleType name="YesNoType">
+		<xs:restriction base="xs:token">
+			<xs:enumeration value="no"/>
+			<xs:enumeration value="yes"/>
+		</xs:restriction>
+	</xs:simpleType>
+	<xs:attributeGroup name="DisplayIdMand">
+		<xs:attribute name="Id" type="xs:NMTOKEN" use="required"/>
+		<xs:attribute name="DisplayOrder" type="xs:positiveInteger" use="optional"/>
+	</xs:attributeGroup>
+	<xs:attributeGroup name="DisplayIdOpt">
+		<xs:attribute name="Id" type="xs:NMTOKEN" use="optional"/>
+		<xs:attribute name="DisplayOrder" type="xs:positiveInteger" use="optional"/>
+	</xs:attributeGroup>
+	<xs:attributeGroup name="PersonalCandidateGroup">
+		<xs:attribute name="ShortCode" type="ShortCodeType" use="optional"/>
+		<xs:attribute name="ExpectedConfirmationReference" type="ConfirmationReferenceType" use="optional"/>
+	</xs:attributeGroup>
+</xs:schema>

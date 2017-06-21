@@ -1,0 +1,7 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<PartyImport xmlns="urn:partyimport-schema">
+  <Parties>
+    <Party ExtRefKey="1" Name="Party 1" Abbreviation="Prty1" ListOrder="0"></Party>
+    <Party ExtRefKey="2" Name="Party 2" Abbreviation="Prty2" ListOrder="0"></Party>
+  </Parties>
+</PartyImport>

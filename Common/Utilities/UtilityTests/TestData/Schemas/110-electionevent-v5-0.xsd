@@ -1,0 +1,118 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--
+  EML 110 Schema - Election Event
+
+  History: 4.0 Edited by Paul Spencer (Boynings Consulting) 2005/2006
+                - major release revision
+
+           5.0 Edited by David RR Webber 2007-02-13
+           - maxWriteIn definition
+           - VotingMethod - made repeatable
+           5.0 Edited by David RR Webber 2007-05-25
+           - added ResultsReported structure to ReportingUnit and PollingPlace
+           5.0 Edited by David RR Webber 2007-06-29
+           - added CountMetric definitions support for results reporting
+  -->
+<xs:schema xmlns="urn:oasis:names:tc:evs:schema:eml" xmlns:xs="http://www.w3.org/2001/XMLSchema" targetNamespace="urn:oasis:names:tc:evs:schema:eml" elementFormDefault="qualified" attributeFormDefault="unqualified" version="5.0" id="eml-110">
+	<xs:include schemaLocation="emlcore-v5-0.xsd"/>
+	<xs:element name="ElectionEvent">
+		<xs:complexType>
+			<xs:sequence>
+				<xs:element ref="EventIdentifier"/>
+				<xs:element name="Description" type="MessagesStructure" minOccurs="0"/>
+				<xs:element ref="ManagingAuthority" minOccurs="0"/>
+				<xs:element ref="DocumentIdentifier" minOccurs="0" maxOccurs="unbounded"/>
+				<xs:element name="AllowedChannels" minOccurs="0">
+					<xs:complexType>
+						<xs:sequence>
+							<xs:element name="Channel" maxOccurs="unbounded">
+								<xs:complexType>
+									<xs:sequence>
+										<xs:element name="ChannelName" type="VotingChannelType"/>
+										<xs:element name="AuthenticationMethod" type="xs:token" minOccurs="0" maxOccurs="unbounded"/>
+										<xs:element name="ResponseMethod" type="xs:token" minOccurs="0"/>
+										<xs:element name="ChannelDate" type="SimpleDateRangeStructure" minOccurs="0" maxOccurs="unbounded"/>
+									</xs:sequence>
+								</xs:complexType>
+							</xs:element>
+						</xs:sequence>
+						<xs:attribute name="DisplayOrder" type="xs:positiveInteger" use="optional"/>
+					</xs:complexType>
+				</xs:element>
+				<xs:element name="Languages" minOccurs="0">
+					<xs:complexType>
+						<xs:sequence>
+							<xs:element name="Language" type="LanguageType" maxOccurs="unbounded"/>
+							<xs:element name="DefaultLanguage" type="LanguageType" minOccurs="0"/>
+						</xs:sequence>
+					</xs:complexType>
+				</xs:element>
+				<xs:element name="Election" maxOccurs="unbounded">
+					<xs:complexType>
+						<xs:sequence>
+							<xs:element ref="ElectionIdentifier"/>
+							<xs:element name="Description" type="MessagesStructure" minOccurs="0"/>
+							<xs:element name="Date" type="ComplexDateRangeStructure" minOccurs="0" maxOccurs="unbounded"/>
+							<xs:element ref="ManagingAuthority" minOccurs="0"/>
+							<xs:element ref="DocumentIdentifier" minOccurs="0" maxOccurs="unbounded"/>
+							<xs:element name="Contest" maxOccurs="unbounded">
+								<xs:complexType>
+									<xs:sequence>
+										<xs:element ref="ContestIdentifier"/>
+										<xs:element name="ReportingUnit" minOccurs="0" maxOccurs="unbounded">
+											<xs:complexType>
+												<xs:sequence>
+													<xs:element ref="ReportingUnitIdentifier" maxOccurs="unbounded"/>
+													<xs:element ref="ResponsibleOfficer" minOccurs="0" maxOccurs="unbounded"/>
+													<xs:element name="ResultsReported" type="ResultsReportedStructure" minOccurs="0" maxOccurs="unbounded"/>
+												</xs:sequence>
+											</xs:complexType>
+										</xs:element>
+										<xs:element ref="Area" minOccurs="0"/>
+										<xs:element name="AllowedChannels" minOccurs="0">
+											<xs:complexType>
+												<xs:sequence>
+													<xs:element name="Channel" maxOccurs="unbounded">
+														<xs:complexType>
+															<xs:sequence>
+																<xs:element name="ChannelName" type="VotingChannelType"/>
+																<xs:element name="AuthenticationMethod" type="xs:token" minOccurs="0" maxOccurs="unbounded"/>
+																<xs:element name="ResponseMethod" type="xs:token" minOccurs="0"/>
+																<xs:element name="ChannelDate" type="SimpleDateRangeStructure" minOccurs="0" maxOccurs="unbounded"/>
+															</xs:sequence>
+														</xs:complexType>
+													</xs:element>
+												</xs:sequence>
+												<xs:attribute name="DisplayOrder" type="xs:positiveInteger" use="optional"/>
+											</xs:complexType>
+										</xs:element>
+										<xs:element ref="ManagingAuthority" minOccurs="0"/>
+										<xs:element ref="Position" minOccurs="0"/>
+										<xs:element name="Description" type="MessagesStructure" minOccurs="0"/>
+										<xs:element ref="VotingMethod" maxOccurs="unbounded"/>
+										<xs:element ref="CountingAlgorithm" minOccurs="0"/>
+										<xs:element ref="CountMetric" minOccurs="0" maxOccurs="unbounded"/>
+										<xs:element ref="BallotIdentifierRange" minOccurs="0"/>
+										<xs:element ref="MaxVotes"/>
+										<xs:element ref="MinVotes" minOccurs="0"/>
+										<xs:element name="MaxWriteIn" type="xs:positiveInteger" minOccurs="0"/>
+										<xs:element ref="NumberOfPositions" minOccurs="0"/>
+										<xs:element ref="PollingPlace" minOccurs="0" maxOccurs="unbounded"/>
+										<xs:element name="Messages" type="MessagesStructure" minOccurs="0"/>
+										<xs:any namespace="##other" minOccurs="0" maxOccurs="unbounded"/>
+									</xs:sequence>
+									<xs:attribute name="DisplayOrder" type="xs:positiveInteger" use="optional"/>
+								</xs:complexType>
+							</xs:element>
+							<xs:element name="Messages" type="MessagesStructure" minOccurs="0"/>
+							<xs:any namespace="##other" minOccurs="0" maxOccurs="unbounded"/>
+						</xs:sequence>
+					</xs:complexType>
+				</xs:element>
+				<xs:element name="EventDate" type="SimpleDateRangeStructure" minOccurs="0"/>
+				<xs:element name="Messages" type="MessagesStructure" minOccurs="0"/>
+				<xs:any namespace="##other" minOccurs="0" maxOccurs="unbounded"/>
+			</xs:sequence>
+		</xs:complexType>
+	</xs:element>
+</xs:schema>

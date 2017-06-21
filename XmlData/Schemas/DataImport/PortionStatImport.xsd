@@ -1,0 +1,30 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<xs:schema xmlns:tns="urn:portionstatimport-schema" elementFormDefault="qualified" targetNamespace="urn:portionstatimport-schema" xmlns:xs="http://www.w3.org/2001/XMLSchema">
+  <xs:element name="PortionStatImport" nillable="true" type="tns:PortionStatImport" />
+  <xs:complexType name="PortionStatImport">
+    <xs:complexContent mixed="false">
+      <xs:extension base="tns:DomainObject">
+        <xs:sequence>
+          <xs:element minOccurs="0" maxOccurs="1" name="PortionStats" type="tns:ArrayOfPortionStat" />
+        </xs:sequence>
+      </xs:extension>
+    </xs:complexContent>
+  </xs:complexType>
+  <xs:complexType name="DomainObject" />
+  <xs:complexType name="PortionStat">
+    <xs:complexContent mixed="false">
+      <xs:extension base="tns:DomainObject">
+        <xs:attribute name="PartyId" type="xs:int" use="required" />
+        <xs:attribute name="ExtRefKeyPartyId" type="xs:string" />
+        <xs:attribute name="PortionId" type="xs:int" use="required" />
+        <xs:attribute name="ExtRefKeyPortionId" type="xs:string" />
+        <xs:attribute name="Registration" type="xs:long" use="required" />
+      </xs:extension>
+    </xs:complexContent>
+  </xs:complexType>
+  <xs:complexType name="ArrayOfPortionStat">
+    <xs:sequence>
+      <xs:element minOccurs="0" maxOccurs="unbounded" name="PortionStat" nillable="true" type="tns:PortionStat" />
+    </xs:sequence>
+  </xs:complexType>
+</xs:schema>

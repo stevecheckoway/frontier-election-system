@@ -1,0 +1,48 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<xs:schema xmlns:tns="urn:districtimport-schema" elementFormDefault="qualified" targetNamespace="urn:districtimport-schema" xmlns:xs="http://www.w3.org/2001/XMLSchema">
+  <xs:element name="DistrictImport" nillable="true" type="tns:DistrictImport" />
+  <xs:complexType name="DistrictImport">
+    <xs:complexContent mixed="false">
+      <xs:extension base="tns:DomainObject">
+        <xs:sequence>
+          <xs:element minOccurs="0" maxOccurs="1" name="DistrictCategories" type="tns:ArrayOfDistrictCategory" />
+        </xs:sequence>
+      </xs:extension>
+    </xs:complexContent>
+  </xs:complexType>
+  <xs:complexType name="DomainObject" />
+  <xs:complexType name="District">
+    <xs:complexContent mixed="false">
+      <xs:extension base="tns:DomainObject">
+        <xs:attribute name="Id" type="xs:int" use="required" />
+        <xs:attribute name="Name" type="xs:string" />
+        <xs:attribute name="StateCode" type="xs:string" />
+        <xs:attribute name="ExtRefKey" type="xs:string" />
+        <xs:attribute name="ListOrder" type="xs:int" use="required" />
+      </xs:extension>
+    </xs:complexContent>
+  </xs:complexType>
+  <xs:complexType name="DistrictCategory">
+    <xs:complexContent mixed="false">
+      <xs:extension base="tns:DomainObject">
+        <xs:sequence>
+          <xs:element minOccurs="0" maxOccurs="1" name="Districts" type="tns:ArrayOfDistrict" />
+        </xs:sequence>
+        <xs:attribute name="Id" type="xs:int" use="required" />
+        <xs:attribute name="Name" type="xs:string" />
+        <xs:attribute name="StateCode" type="xs:string" />
+        <xs:attribute name="ExtRefKey" type="xs:string" />
+      </xs:extension>
+    </xs:complexContent>
+  </xs:complexType>
+  <xs:complexType name="ArrayOfDistrict">
+    <xs:sequence>
+      <xs:element minOccurs="0" maxOccurs="unbounded" name="District" nillable="true" type="tns:District" />
+    </xs:sequence>
+  </xs:complexType>
+  <xs:complexType name="ArrayOfDistrictCategory">
+    <xs:sequence>
+      <xs:element minOccurs="0" maxOccurs="unbounded" name="DistrictCategory" nillable="true" type="tns:DistrictCategory" />
+    </xs:sequence>
+  </xs:complexType>
+</xs:schema>

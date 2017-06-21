@@ -1,0 +1,51 @@
+﻿<?xml version="1.0"?>
+<root>
+	<version value="1.1" />
+	<style_sheet>
+		<style_object id="default">
+			<set_align value="justify" justify_last_line="false" />
+			<set_b font_name="Helvetica-Bold" />
+			<set_font font_name="Helvetica" size="10" color="#000000" />
+		</style_object>
+	</style_sheet>
+	<resource_bundle>
+		<style id="default">
+			<text_area id="InstructionsArrow">
+				<indent factor ="2">
+					<b>INSTRUCTIONS TO VOTERS:</b><br factor="1" />
+					<b>1.</b> Fill out this ballot <b>SECRETLY</b> in the voting booth.<br factor="1" />
+					<b>2.</b> To VOTE, <b>CONNECT THE ARROW</b> pointing to your choice, like this: <font ttf_file_name="SequoiaArtifacts.ttf">B</font>
+					<br factor="1" />
+					<b>3. DO NOT FOLD THE BALLOT</b>. After voting, <b>FEED THE BALLOT</b> into the scanner.
+					&space;&space;&space;&space;
+				</indent>
+			</text_area>
+			<text_area id="InstructionsOval">
+				<indent>
+					<b>INSTRUCTIONS TO VOTERS:</b><br factor="1" />
+					<b>1.</b> Fill out this ballot <b>SECRETLY</b> in the voting booth.<br factor="1" />
+					<b>2.</b> To VOTE, <b>COMPLETELY FILL THE OVAL</b> to the right of the candidate
+					for whom you wish to vote, like this: <font ttf_file_name="SequoiaArtifacts.ttf">A</font>
+					<br factor="1" />
+					<b>3. DO NOT FOLD THE BALLOT</b>. After voting, <b>FEED THE BALLOT</b> into the scanner.
+        </indent>
+			</text_area>
+			<text_area id="InstructionsControlBallot">
+				<indent>
+					<b>INSTRUCTIONS TO POLL WORKER:</b>
+					<br factor="1" />
+					<b>1.</b> Insert this control ballot to activate audio voting.<br factor="1" />
+					<b>2.</b> After activation, please remove ballot from tabulator.
+				</indent>
+			</text_area>
+			<text_area id="BallotTitle">
+				<image align="right" file_name="SequoiaSeal.jpg" height="59" width="72" padding="0,0,50,0" wrap="true" />
+				<b>&#169; 2009 <placeholder id="ElectionName"/></b><br factor="1"/>
+				Demonstration Ballot, Famous Names.<br factor="1"/>
+				<placeholder id="ElectionDate"/>&space;<br factor="1" />
+				<b>Precinct:</b> <placeholder id="PrecinctName"/><br factor="1"/>
+				<b>Ballot style:</b> <placeholder id="BallotStyleName"/>
+			</text_area>
+		</style>
+	</resource_bundle>
+</root>

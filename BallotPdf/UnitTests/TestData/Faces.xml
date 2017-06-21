@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="utf-8"?>
+<Faces xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xsd="http://www.w3.org/2001/XMLSchema">
+  <Face Id="0">
+    <Marks>
+      <Mark Id="1" LeftX="2.592" TopY="2.735" />
+      <Mark Id="2" LeftX="2.592" TopY="3.085" />
+    </Marks>
+  </Face>
+  <Face Id="1">
+    <Marks>
+      <Mark Id="3" LeftX="2.592" TopY="1.235" />
+      <Mark Id="4" LeftX="2.592" TopY="1.585" />
+    </Marks>
+  </Face>
+  <Face Id="3">
+    <Marks>
+      <Mark Id="5" LeftX="2.592" TopY="1.235" />
+      <Mark Id="6" LeftX="2.592" TopY="1.585" />
+    </Marks>
+  </Face>
+</Faces>
